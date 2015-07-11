@@ -9,7 +9,7 @@ individual::gene::gene() {
 }
 
 void individual::gene::mutate() {
-   chromosome = std::rand() % 94 + 32;
+   chromosome += std::rand() % 20 - 10;
 }
 
 individual::gene::~gene() {
@@ -35,18 +35,19 @@ void individual::set_gene(int index, int const chro) {
 }
 
 int individual::get_fitness() const {
-   int fitness = 0;
+   int fitness = genes.size()*100;
    int i = 0;
    for (auto gene : genes) {
-      if (gene.chromosome == solution.at(i++)) {
-         fitness++;
+      if (gene.chromosome == solution.at(i)) {
+         fitness += 10;
       }
+      fitness -= std::abs(gene.chromosome - solution.at(i++));
    }
    return fitness;
 }
 
 int individual::get_max_fitness() {
-   return (int)solution.length();
+   return (int)solution.length()*110;
 }
 
 void individual::mutate() {
@@ -59,8 +60,9 @@ void individual::mutate() {
 
 individual individual::crossover(individual a, individual b) {
    individual child;
+   float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
    for (unsigned int i=0; i < a.gene_size; i++) {
-      if ((std::rand() % 10) > 5) {
+      if (r < 0.5) {
          child.set_gene(i, a.get_gene(i));
       } else {
          child.set_gene(i, b.get_gene(i));

@@ -30,30 +30,33 @@ individual population::tournament_selection(std::size_t tsize) const {
    return tournament.get_fittest();
 }
 
-void population::evolve() {
+void population::evolve(double mutation_rate, bool elitism) {
    std::vector<individual> new_pop;
 
-   /* Elitism phase */
-   if (true /* elite? */) {
-      new_pop.push_back(individuals.front());
-   }
+   individual best = get_fittest();
 
    /* Crossover phase */
-   for (unsigned int i = new_pop.size(); i < individuals.size(); i++) {
-      auto a = tournament_selection(25);
-      auto b = tournament_selection(25);
+   for (unsigned int i = (elitism) ? 1 : 0; i < individuals.size(); i++) {
+      auto a = tournament_selection(individuals.size()/10);
+      auto b = tournament_selection(individuals.size()/10);
       individual child = individual::crossover(a,b);
       new_pop.push_back(child);
    }
 
    individuals = new_pop;
    /* Mutation phase */
-   mutate();
+   mutate(mutation_rate);
+
+   /* Elitism phase */
+   if (elitism) {
+      individuals.push_back(best);
+   }
 }
 
-void population::mutate() {
+void population::mutate(double mutation_rate) {
+   float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
    for (auto& ind : individuals) {
-      if ((std::rand() % 10) > 5) {
+      if (r <= mutation_rate) {
          ind.mutate();
       }
    }

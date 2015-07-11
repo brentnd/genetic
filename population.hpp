@@ -24,12 +24,12 @@ public:
 
    void store_individual(int index, individual const &ind);
 
-   void evolve();
+   void evolve(double mutation_rate, bool elitism);
 
    individual tournament_selection(std::size_t tsize) const;
 
 private:
-   void mutate();
+   void mutate(double mutation_rate);
 
    std::vector<individual> individuals;
 };
