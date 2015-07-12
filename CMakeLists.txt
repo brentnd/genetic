@@ -7,7 +7,8 @@ set(EXE genetic)
 
 set(SOURCE_FILES
    src/population.cpp
-   src/individual.cpp)
+   src/individual.cpp
+   src/random.hpp)
 set(TEST_FILES
    test/tests.cpp
    test/catch.hpp)

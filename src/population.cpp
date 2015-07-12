@@ -1,6 +1,6 @@
 #include "population.hpp"
+#include "random.hpp"
 
-#include <cstdlib>
 #include <algorithm>
 
 namespace genetic {
@@ -62,8 +62,7 @@ void population::evolve(double mutation_rate, bool elitism) {
 
 void population::mutate(double mutation_rate) {
    for (auto& ind : individuals) {
-      float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
-      if (r <= mutation_rate) {
+      if (random::probability(mutation_rate)) {
          ind.mutate(mutation_rate);
       }
    }

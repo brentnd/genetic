@@ -1,13 +1,10 @@
 #include <stdio.h>
 #include <cstdlib>
-#include <ctime>
-#include <random>
 
 #include "population.hpp"
 #include "individual.hpp"
 
 int main() {
-   std::srand (time(0));
 
    int max = genetic::individual::get_max_fitness();
    genetic::population pop(999);

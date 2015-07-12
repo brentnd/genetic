@@ -1,16 +1,16 @@
-#include <stdexcept>
 #include "individual.hpp"
+#include "random.hpp"
 
 namespace genetic {
 
 const std::string individual::solution = "123456789012345678901234567980";
 
 individual::gene::gene() {
-   chromosome = std::rand() % 94 + 32;
+   chromosome = random::i_range(32, 126);
 }
 
 void individual::gene::mutate() {
-   chromosome += std::rand() % 20 - 10;
+   chromosome += random::i_range(-10, 10);
 }
 
 individual::gene::~gene() {
@@ -53,8 +53,7 @@ int individual::get_max_fitness() {
 
 void individual::mutate(double mutation_rate) {
    for (int i=0; i < genes.size(); i++) {
-      float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
-      if (r < mutation_rate) {
+      if (random::probability(mutation_rate)) {
          genes[i].mutate();
       }
    }
@@ -66,8 +65,7 @@ individual individual::crossover(individual a, individual b) {
    }
    individual child;
    for (unsigned int i=0; i < individual::solution.size(); i++) {
-      float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
-      if (r < 0.5) {
+      if (random::probability(0.5)) {
          child.set_gene(i, a.get_gene(i));
       } else {
          child.set_gene(i, b.get_gene(i));
