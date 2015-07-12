@@ -3,11 +3,7 @@
 
 namespace genetic {
 
-std::string sequence::solution = "123456789012345678901234567980";
 
-int sequence::get_max_fitness() {
-   return (int)solution.length()*150;
-}
 sequence sequence::crossover(sequence const &a, sequence const &b) {
    sequence child;
    for (unsigned int i=0; i < sequence::solution.size(); i++) {
@@ -18,6 +14,15 @@ sequence sequence::crossover(sequence const &a, sequence const &b) {
       }
    }
    return child;
+}
+int sequence::get_max_fitness() {
+   return (int)solution.length()*150;
+}
+// Default solution
+std::string sequence::solution = "123456789012345678901234567980";
+
+void sequence::set_solution(std::string const & solution) {
+   sequence::solution = solution;
 }
 
 sequence::gene::gene() {

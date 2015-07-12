@@ -7,8 +7,9 @@ namespace genetic {
 
 class sequence : public organism {
 public:
-   static int get_max_fitness();
    static sequence crossover(sequence const &a, sequence const &b);
+   static int get_max_fitness();
+   static void set_solution(std::string const & solution);
 
 private:
    struct gene {
