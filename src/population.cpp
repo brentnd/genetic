@@ -40,8 +40,8 @@ void population::death() {
 }
 
 void population::repopulate() {
-   std::sort (individuals.begin(), individuals.end());
    auto end_itr = individuals.end();
+   end_itr -= individuals.size() % 3;
 
    for (auto itr = individuals.begin(); itr != end_itr; itr+=2){
       auto child = individual::crossover(*itr, *(itr+1));
