@@ -57,58 +57,70 @@ TEST_CASE( "Test for random", "[random]" ) {
 TEST_CASE( "Test for genetic::sequence", "[sequence]" ) {
    // Predictable random tests (that passed before)
    random::set_seed(1);
-   genetic::sequence a,b;
-   // Two random individuals don't match
-   REQUIRE( !(a == b) );
-   REQUIRE( a.get_genes() != b.get_genes() );
+   SECTION ( "genes of two rand inits are different" ) {
+      genetic::sequence a, b;
+      // Two random individuals don't match
+      REQUIRE_FALSE(a == b);
+      REQUIRE_FALSE(a.get_genes() == b.get_genes());
+      REQUIRE_FALSE(a.get_fitness() == b.get_fitness());
+   }
 
-   // Copy constructor
-   genetic::sequence a_dup = a;
-   REQUIRE( a_dup == a );
-   // Mutate (0 = none)
-   a.mutate(0.0);
-   REQUIRE( a_dup == a );
-   REQUIRE( a_dup.get_fitness() == a.get_fitness() );
-   // Mutation > 0.0 should modify genes
-   a.mutate(0.5);
-   REQUIRE( !(a_dup == a) );
-   REQUIRE( a_dup.get_fitness() != a.get_fitness() );
-   // Mutation == 1.0 should modify again
-   a.mutate(1.0);
-   REQUIRE( !(a_dup == a) );
-   REQUIRE( a_dup.get_fitness() != a.get_fitness() );
+   SECTION ( "mutations with different rates" ) {
+      // Copy constructor
+      genetic::sequence a;
+      genetic::sequence a_dup = a;
+      REQUIRE(a_dup == a);
+      // Mutate (0 = none)
+      a.mutate(0.0);
+      REQUIRE(a_dup == a);
+      REQUIRE(a_dup.get_fitness() == a.get_fitness());
+      // Mutation > 0.0 should modify genes
+      a.mutate(0.5);
+      REQUIRE_FALSE(a_dup == a);
+      REQUIRE(a_dup.get_fitness() != a.get_fitness());
+      // Mutation == 1.0 should modify again
+      a.mutate(1.0);
+      REQUIRE_FALSE(a_dup == a);
+      REQUIRE(a_dup.get_fitness() != a.get_fitness());
+   }
 
-   // Crossover (child) doesn't exactly match either parent
-   genetic::sequence child = genetic::sequence::crossover(a, b);
-   REQUIRE( !(child == a) );
-   REQUIRE( !(child == b) );
+   SECTION ( "crossover results in differnet children" ) {
+      genetic::sequence a,b;
+      // Crossover (child) doesn't exactly match either parent
+      genetic::sequence child = genetic::sequence::crossover(a, b);
+      REQUIRE_FALSE(child == a);
+      REQUIRE_FALSE(child == b);
 
-   // Crossover (siblings) shouldn't match
-   genetic::sequence sibling = genetic::sequence::crossover(a, b);
-   REQUIRE( !(sibling == child) );
-   REQUIRE( !(sibling == a) );
-
-   // Genes don't match, fitness shouldn't
-   REQUIRE( a.get_fitness() != b.get_fitness() );
+      // Crossover (siblings) shouldn't match
+      genetic::sequence sibling = genetic::sequence::crossover(a, b);
+      REQUIRE_FALSE(sibling == child);
+      REQUIRE_FALSE(sibling == a);
+   }
 }
 
 TEST_CASE( "Test for genetic::population", "[population]" ) {
    // Predictable random tests (that passed before)
    random::set_seed(1);
-   // Initialization
-   genetic::population<genetic::sequence> pop(99);
-   REQUIRE( pop.get_size() == 99 );
-   pop.evolve(0.5, true);
-   REQUIRE( pop.get_size() == 99 );
 
-   // Initialization
-   genetic::population<genetic::sequence> pop_odd(101);
-   REQUIRE( pop_odd.get_size() == 101 );
-   pop_odd.evolve(0.5, true);
-   REQUIRE( pop_odd.get_size() == 101 );
+   SECTION ( "population size constant through evoluation, factor of 3" ) {
+      genetic::population<genetic::sequence> pop(99);
+      REQUIRE(pop.get_size() == 99);
+      pop.evolve(0.5, true);
+      REQUIRE(pop.get_size() == 99);
+   }
 
-   // Evolution should improve
-   auto pop_old = pop;
-   pop.evolve(0.5, true);
-   REQUIRE( pop.get_fittest().get_fitness() >= pop_old.get_fittest().get_fitness() );
+   SECTION ( "population size constant through evoluation, non-factor of 3" ) {
+      genetic::population<genetic::sequence> pop_odd(101);
+      REQUIRE(pop_odd.get_size() == 101);
+      pop_odd.evolve(0.5, true);
+      REQUIRE(pop_odd.get_size() == 101);
+   }
+
+   SECTION ( "evoluation should improve fitness" ) {
+      genetic::population<genetic::sequence> pop(99);
+      auto pop_old = pop;
+      pop.evolve(0.5, true);
+      REQUIRE(pop.get_fittest().get_fitness() >= pop_old.get_fittest().get_fitness());
+      REQUIRE(pop.get_fitness() >= pop_old.get_fitness());
+   }
 }
