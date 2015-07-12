@@ -50,7 +50,7 @@ int main( int argc, char * const * argv ) {
    do {
       auto fittest = pop.get_fittest();
       best = fittest.get_fitness();
-      printf("Generation %d: ", generation);
+      printf("Generation %d, f^=%d", generation, pop.get_fitness());
       std::cout << fittest << std::endl;
       if (generation++ > max_generations) {
          break;

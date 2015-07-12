@@ -98,16 +98,13 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
    // Initialization
    genetic::population<genetic::sequence> pop(99);
    REQUIRE( pop.get_size() == 99 );
-   pop.death();
-   REQUIRE( pop.get_size() == 66 );
-   pop.repopulate();
+   pop.evolve(0.5, true);
    REQUIRE( pop.get_size() == 99 );
 
    // Initialization
    genetic::population<genetic::sequence> pop_odd(101);
    REQUIRE( pop_odd.get_size() == 101 );
-   pop_odd.death();
-   pop_odd.repopulate();
+   pop_odd.evolve(0.5, true);
    REQUIRE( pop_odd.get_size() == 101 );
 
    // Evolution should improve

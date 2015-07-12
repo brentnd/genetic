@@ -5,7 +5,7 @@
 #include <cstdlib>
 #include <vector>
 
-#include "individual.hpp"
+#include "organism.hpp"
 #include "random.hpp"
 
 namespace genetic {
@@ -13,16 +13,40 @@ namespace genetic {
 template <class T>
 class population {
 public:
-   population(std::size_t size) : individuals(size) {
+   // New population using T default constructor
+   population(std::size_t size) : organisms(size) {
    }
 
-   T get_individual(int index) const {
-      individuals.at(index);
+   // Get any specific organism
+   T get_organism(int index) const {
+      organisms.at(index);
    }
 
+   // Evolve the population one death, reproduction, and mutation cycle
+   void evolve(double mutation_rate, bool elitism) {
+      /* Death phase */
+      degenerate();
+
+      /* Reproduction phase */
+      regenerate();
+
+      /* Mutation phase */
+      mutate(mutation_rate);
+   }
+
+   // Get the fitness of the entire population
+   int get_fitness() const {
+      int fitness = 0;
+      for (auto ind : organisms) {
+         fitness += ind.get_fitness();
+      }
+      return fitness/get_size();
+   }
+
+   // Get the fittest organism in the population
    T get_fittest() const {
-      T fittest = individuals[0];
-      for (auto ind : individuals) {
+      T fittest = organisms[0];
+      for (auto ind : organisms) {
          if (fittest.get_fitness() < ind.get_fitness()) {
             fittest = ind;
          }
@@ -30,61 +54,47 @@ public:
       return std::move(fittest);
    }
 
-   int get_fitness() const {
-      int fitness = 0;
-      for (auto ind : individuals) {
-         fitness += ind.get_fitness();
-      }
-      return fitness/get_size();
-   }
-
+   // Get the size of the population
    std::size_t get_size() const {
-      return individuals.size();
+      return organisms.size();
    }
 
-   void store_individual(int index, T const &ind)  {
-      individuals[index] = ind;
-   }
-
-   void evolve(double mutation_rate, bool elitism)  {
-      /* Death phase */
-      death();
-
-      /* Reproduction phase */
-      repopulate();
-
-      /* Mutation phase */
-      mutate(mutation_rate);
-   }
-
-   void death()  {
-      std::sort (individuals.begin(), individuals.end());
-      auto end_itr = individuals.begin()+(individuals.size()/3);
-
-      for (auto itr = individuals.begin(); itr != end_itr; itr++) {
-         individuals.erase(itr);
-      }
-   }
-   void repopulate() {
-      auto end_itr = individuals.end();
-      end_itr -= individuals.size() % 3;
-
-      for (auto itr = individuals.begin(); itr != end_itr; itr+=2){
-         auto child = T::crossover(*itr, *(itr+1));
-         individuals.push_back(std::move(child));
-      }
+   void store_individual(int index, T const &ind) {
+      organisms[index] = ind;
    }
 
 private:
+   // Remove one third of the population
+   void degenerate()  {
+      std::sort (organisms.begin(), organisms.end());
+      auto end_itr = organisms.begin()+(organisms.size()/3);
+
+      for (auto itr = organisms.begin(); itr != end_itr; itr++) {
+         organisms.erase(itr);
+      }
+   }
+
+   // Mutate entire population slightly
    void mutate(double mutation_rate) {
-      for (auto& ind : individuals) {
+      for (auto ind : organisms) {
          if (random::probability(mutation_rate)) {
             ind.mutate(mutation_rate);
          }
       }
    }
+   // Use 2/3 population to regenerate missing 1/3
+   void regenerate() {
+      auto end_itr = organisms.end();
+      end_itr -= organisms.size() % 3;
 
-   std::vector<T> individuals;
+      for (auto itr = organisms.begin(); itr != end_itr; itr+=2) {
+         auto child = T::crossover(*itr, *(itr+1));
+         organisms.push_back(std::move(child));
+      }
+   }
+
+   // Storage for all organisms
+   std::vector<T> organisms;
 };
 }
 

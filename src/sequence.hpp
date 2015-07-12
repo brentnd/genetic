@@ -1,11 +1,11 @@
 #ifndef GENETIC_SEQUENCE_HPP
 #define GENETIC_SEQUENCE_HPP
 
-#include "individual.hpp"
+#include "organism.hpp"
 
 namespace genetic {
 
-class sequence : public individual {
+class sequence : public organism {
 public:
    struct gene {
       int chromosome;
