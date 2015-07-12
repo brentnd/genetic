@@ -1,6 +1,7 @@
 #include "population.hpp"
 
 #include <cstdlib>
+#include <algorithm>
 
 namespace genetic {
 
@@ -17,40 +18,46 @@ individual population::get_fittest() const {
    return std::move(fittest);
 }
 
+int population::get_fitness() const {
+   int fitness = 0;
+   for (auto ind : individuals) {
+      fitness += ind.get_fitness();
+   }
+   return fitness/get_size();
+}
+
 void population::store_individual(int index, individual const &ind) {
    individuals[index] = ind;
 }
 
-individual population::tournament_selection(std::size_t tsize) const {
-   population tournament(tsize);
-   for (unsigned int i=0; i < tsize; i++) {
-      auto random_individual = individuals.at( std::rand() % individuals.size() );
-      tournament.store_individual(i, random_individual);
+void population::death() {
+   std::sort (individuals.begin(), individuals.end());
+   auto end_itr = individuals.begin()+(individuals.size()/3);
+
+   for (auto itr = individuals.begin(); itr != end_itr; itr++) {
+      individuals.erase(itr);
    }
-   return tournament.get_fittest();
+}
+
+void population::repopulate() {
+   std::sort (individuals.begin(), individuals.end());
+   auto end_itr = individuals.end();
+
+   for (auto itr = individuals.begin(); itr != end_itr; itr+=2){
+      auto child = individual::crossover(*itr, *(itr+1));
+      individuals.push_back(std::move(child));
+   }
 }
 
 void population::evolve(double mutation_rate, bool elitism) {
-   std::vector<individual> new_pop;
+   /* Death phase */
+   death();
 
-   individual best = get_fittest();
+   /* Reproduction phase */
+   repopulate();
 
-   /* Crossover phase */
-   for (unsigned int i = (elitism) ? 1 : 0; i < individuals.size(); i++) {
-      auto a = tournament_selection(20);
-      auto b = tournament_selection(20);
-      individual child = individual::crossover(a,b);
-      new_pop.push_back(child);
-   }
-
-   individuals = new_pop;
    /* Mutation phase */
    mutate(mutation_rate);
-
-   /* Elitism phase */
-   if (elitism) {
-      individuals.push_back(best);
-   }
 }
 
 void population::mutate(double mutation_rate) {

@@ -44,6 +44,10 @@ public:
       return genes==other.genes;
    }
 
+   bool operator<(individual const &other) const {
+      return get_fitness() < other.get_fitness();
+   }
+
 private:
    std::vector<gene> genes;
 };

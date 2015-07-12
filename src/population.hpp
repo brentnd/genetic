@@ -18,6 +18,8 @@ public:
 
    individual get_fittest() const;
 
+   int get_fitness() const;
+
    std::size_t get_size() const {
       return individuals.size();
    }
@@ -26,9 +28,11 @@ public:
 
    void evolve(double mutation_rate, bool elitism);
 
+   void death();
+   void repopulate();
+
 private:
    void mutate(double mutation_rate);
-   individual tournament_selection(std::size_t tsize) const;
 
    std::vector<individual> individuals;
 };

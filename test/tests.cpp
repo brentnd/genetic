@@ -40,8 +40,14 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
 
 TEST_CASE( "Test for genetic::population", "[population]" ) {
    // Initialization
-   genetic::population pop(100);
-   REQUIRE( pop.get_size() == 100 );
+   genetic::population pop(99);
+   REQUIRE( pop.get_size() == 99 );
+
+   pop.death();
+   REQUIRE( pop.get_size() == 66 );
+
+   pop.repopulate();
+   REQUIRE( pop.get_size() == 99 );
 
    // Evolution should improve
    auto pop_old = pop;
