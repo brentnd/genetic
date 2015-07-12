@@ -10,8 +10,8 @@
 int main( int argc, char * const * argv ) {
    // Parameter defaults
    bool elitism = false;
-   int max_generations = 500;
-   int population_size = 999;
+   unsigned int max_generations = 500;
+   unsigned int population_size = 999;
    double mutation_rate = 0.08;
 
    opterr = 0;
@@ -44,18 +44,6 @@ int main( int argc, char * const * argv ) {
    int max = genetic::sequence::get_max_fitness();
    random::reset();
    genetic::population<genetic::sequence> pop(population_size);
-
-   int generation = 0;
-   int best;
-   do {
-      auto fittest = pop.get_fittest();
-      best = fittest.get_fitness();
-      printf("Generation %d, f^=%d", generation, pop.get_fitness());
-      std::cout << fittest << std::endl;
-      if (generation++ > max_generations) {
-         break;
-      }
-      pop.evolve(mutation_rate, elitism);
-   } while (best < max);
+   pop.evolve(max_generations, max, mutation_rate, elitism);
    return 0;
 }

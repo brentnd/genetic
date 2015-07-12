@@ -105,22 +105,31 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
    SECTION ( "population size constant through evoluation, factor of 3" ) {
       genetic::population<genetic::sequence> pop(99);
       REQUIRE(pop.get_size() == 99);
-      pop.evolve(0.5, true);
+      pop.evolve(1, genetic::sequence::get_max_fitness(), 0.2, true);
       REQUIRE(pop.get_size() == 99);
    }
 
    SECTION ( "population size constant through evoluation, non-factor of 3" ) {
       genetic::population<genetic::sequence> pop_odd(101);
       REQUIRE(pop_odd.get_size() == 101);
-      pop_odd.evolve(0.5, true);
+      pop_odd.evolve(1, genetic::sequence::get_max_fitness(), 0.2, true);
       REQUIRE(pop_odd.get_size() == 101);
    }
 
    SECTION ( "evoluation should improve fitness" ) {
       genetic::population<genetic::sequence> pop(99);
       auto pop_old = pop;
-      pop.evolve(0.5, true);
+      pop.evolve(1, genetic::sequence::get_max_fitness(), 0.2, true);
       REQUIRE(pop.get_fittest().get_fitness() >= pop_old.get_fittest().get_fitness());
       REQUIRE(pop.get_fitness() >= pop_old.get_fitness());
+   }
+
+   SECTION ( "20 evoluation cycles" ) {
+      genetic::population<genetic::sequence> pop(99);
+      auto pop_old = pop;
+      pop.evolve(20, genetic::sequence::get_max_fitness(), 0.1, true);
+      REQUIRE(pop.get_fittest().get_fitness() >= pop_old.get_fittest().get_fitness());
+      REQUIRE(pop.get_fitness() >= pop_old.get_fitness());
+      REQUIRE(pop.get_size() >= pop_old.get_size());
    }
 }

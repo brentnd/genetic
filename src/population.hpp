@@ -23,15 +23,15 @@ public:
    }
 
    // Evolve the population one death, reproduction, and mutation cycle
-   void evolve(double mutation_rate, bool elitism) {
-      /* Death phase */
-      degenerate();
-
-      /* Reproduction phase */
-      regenerate();
-
-      /* Mutation phase */
-      mutate(mutation_rate);
+   unsigned int evolve(unsigned int generations, int goal, double mutation_rate, bool elitism) {
+      int best;
+      unsigned int current_generation = 0;
+      do {
+         auto fittest = get_fittest();
+         best = fittest.get_fitness();
+         evolution_cycle(mutation_rate, elitism);
+      } while ((best < goal) && (++current_generation > generations));
+      return current_generation;
    }
 
    // Get the fitness of the entire population
@@ -74,6 +74,18 @@ private:
       }
    }
 
+   // Evolve the population one death, reproduction, and mutation cycle
+   void evolution_cycle(double mutation_rate, bool elitism) {
+      /* Death phase */
+      degenerate();
+
+      /* Reproduction phase */
+      regenerate();
+
+      /* Mutation phase */
+      mutate(mutation_rate);
+   }
+
    // Mutate entire population slightly
    void mutate(double mutation_rate) {
       for (auto ind : organisms) {
@@ -96,6 +108,7 @@ private:
    // Storage for all organisms
    std::vector<T> organisms;
 };
-}
+
+} // namespace genetic
 
 #endif //GENETIC_POPULATION_HPP
