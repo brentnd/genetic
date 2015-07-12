@@ -132,3 +132,14 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
       REQUIRE(pop.get_size() >= pop_old.get_size());
    }
 }
+
+TEST_CASE( "Test for previous results", "[results]" ) {
+   // Predictable random tests (that passed before)
+   random::set_seed(1);
+
+   SECTION ( "'easy' solution" ) {
+      genetic::sequence::set_solution("easy");
+      genetic::population<genetic::sequence> pop(99);
+      REQUIRE(pop.evolve(50, genetic::sequence::get_max_fitness(), 0.08, true));
+   }
+}
