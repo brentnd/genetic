@@ -1,17 +1,18 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <getopt.h>
+#include <iostream>
 
 #include "population.hpp"
-#include "individual.hpp"
+#include "sequence.hpp"
 #include "random.hpp"
 
 int main( int argc, char * const * argv ) {
    // Parameter defaults
    bool elitism = false;
-   int max_generations = 50;
-   int population_size = 99;
-   double mutation_rate = 0.1;
+   int max_generations = 500;
+   int population_size = 999;
+   double mutation_rate = 0.08;
 
    opterr = 0;
    char c;
@@ -40,17 +41,17 @@ int main( int argc, char * const * argv ) {
       }
    }
 
-   int max = genetic::individual::get_max_fitness();
-   random::set_seed(1);
-   genetic::population pop(population_size);
+   int max = genetic::sequence::get_max_fitness();
+   random::reset();
+   genetic::population<genetic::sequence> pop(population_size);
 
    int generation = 0;
    int best;
    do {
-      genetic::individual fittest = pop.get_fittest();
+      auto fittest = pop.get_fittest();
       best = fittest.get_fitness();
-      printf("Generation %d: Fittness: %d ", generation, best);
-      fittest.print_genes();
+      printf("Generation %d: ", generation);
+      std::cout << fittest << std::endl;
       if (generation++ > max_generations) {
          break;
       }

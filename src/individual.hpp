@@ -3,54 +3,22 @@
 
 #include <string>
 #include <vector>
+#include <iostream>
 
 namespace genetic {
 
 class individual {
 public:
-   struct gene {
-      int chromosome;
+   virtual int get_fitness() const =0;
+   virtual void mutate(double mutation_rate) =0;
 
-      gene();
-      void mutate();
-      ~gene();
-      bool operator==(gene const &other) const {
-         return chromosome==other.chromosome;
-      }
-   };
-
-   static std::string const solution;
-
-   static int get_max_fitness();
-
-   individual();
-
-   int get_gene(int index) const;
-   void set_gene(int index, int const gene);
-
-   int get_fitness() const;
-
-   void print_genes() const;
-
-   std::vector<gene> const & get_genes() const {
-      return genes;
+   friend std::ostream& operator<< (std::ostream& stream, const individual& ind) {
+      stream << "individual @ (" << static_cast<const void *>(&ind) << ") f=" << ind.get_fitness();
+      return stream;
    }
-
-   void mutate(double mutation_rate);
-
-   static individual crossover(individual a, individual b);
-
-   bool operator==(individual const &other) const {
-      return genes==other.genes;
-   }
-
    bool operator<(individual const &other) const {
       return get_fitness() < other.get_fitness();
    }
-
-private:
-   std::vector<gene> genes;
-   int fitness;
 };
 
 }

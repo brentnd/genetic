@@ -6,9 +6,10 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 set(EXE genetic)
 
 set(SOURCE_FILES
-   src/population.cpp
-   src/individual.cpp
+   src/population.hpp
+   src/sequence.cpp
    src/random.cpp)
+
 set(TEST_FILES
    test/tests.cpp
    test/catch.hpp)

@@ -1,8 +1,8 @@
 #include "catch.hpp"
 
-#include "../src/individual.hpp"
 #include "../src/population.hpp"
 #include "../src/random.hpp"
+#include "../src/sequence.hpp"
 
 TEST_CASE( "Test for random", "[random]" ) {
    random::set_seed(1);
@@ -54,16 +54,16 @@ TEST_CASE( "Test for random", "[random]" ) {
    }
 }
 
-TEST_CASE( "Test for genetic::individual", "[individual]" ) {
+TEST_CASE( "Test for genetic::sequence", "[sequence]" ) {
    // Predictable random tests (that passed before)
    random::set_seed(1);
-   genetic::individual a,b;
+   genetic::sequence a,b;
    // Two random individuals don't match
    REQUIRE( !(a == b) );
    REQUIRE( a.get_genes() != b.get_genes() );
 
    // Copy constructor
-   genetic::individual a_dup = a;
+   genetic::sequence a_dup = a;
    REQUIRE( a_dup == a );
    // Mutate (0 = none)
    a.mutate(0.0);
@@ -79,12 +79,12 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
    REQUIRE( a_dup.get_fitness() != a.get_fitness() );
 
    // Crossover (child) doesn't exactly match either parent
-   genetic::individual child = genetic::individual::crossover(a, b);
+   genetic::sequence child = genetic::sequence::crossover(a, b);
    REQUIRE( !(child == a) );
    REQUIRE( !(child == b) );
 
    // Crossover (siblings) shouldn't match
-   genetic::individual sibling = genetic::individual::crossover(a, b);
+   genetic::sequence sibling = genetic::sequence::crossover(a, b);
    REQUIRE( !(sibling == child) );
    REQUIRE( !(sibling == a) );
 
@@ -96,7 +96,7 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
    // Predictable random tests (that passed before)
    random::set_seed(1);
    // Initialization
-   genetic::population pop(99);
+   genetic::population<genetic::sequence> pop(99);
    REQUIRE( pop.get_size() == 99 );
    pop.death();
    REQUIRE( pop.get_size() == 66 );
@@ -104,7 +104,7 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
    REQUIRE( pop.get_size() == 99 );
 
    // Initialization
-   genetic::population pop_odd(101);
+   genetic::population<genetic::sequence> pop_odd(101);
    REQUIRE( pop_odd.get_size() == 101 );
    pop_odd.death();
    pop_odd.repopulate();

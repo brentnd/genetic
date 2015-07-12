@@ -1,43 +1,35 @@
-#include "individual.hpp"
+#include "sequence.hpp"
 #include "random.hpp"
 
 namespace genetic {
 
-const std::string individual::solution = "123456789012345678901234567980";
+const std::string sequence::solution = "123456789012345678901234567980";
 
-individual::gene::gene() {
+sequence::gene::gene() {
    chromosome = random::i_range(32, 126);
 }
 
-void individual::gene::mutate() {
+void sequence::gene::mutate() {
    chromosome += random::i_range(-10, 10);
 }
 
-individual::gene::~gene() {
+sequence::gene::~gene() {
 }
 
-individual::individual() :
-   genes(individual::solution.size()),
+sequence::sequence() :
+   genes(sequence::solution.size()),
    fitness(0) {
 }
 
-int individual::get_gene(int index) const {
+int sequence::get_gene(int index) const {
    return genes.at(index).chromosome;
 }
 
-void individual::print_genes() const {
-   printf("Gene: ");
-   for (auto gene : genes) {
-      printf("%c",gene.chromosome);
-   }
-   printf("\n");
-}
-
-void individual::set_gene(int index, int const chro) {
+void sequence::set_gene(int index, int const chro) {
    genes[index].chromosome = chro;
 }
 
-int individual::get_fitness() const {
+int sequence::get_fitness() const {
    if (fitness != 0) {
       return fitness;
    } else {
@@ -54,11 +46,11 @@ int individual::get_fitness() const {
    }
 }
 
-int individual::get_max_fitness() {
+int sequence::get_max_fitness() {
    return (int)solution.length()*150;
 }
 
-void individual::mutate(double mutation_rate) {
+void sequence::mutate(double mutation_rate) {
    for (int i=0; i < genes.size(); i++) {
       if (random::probability(mutation_rate)) {
          genes[i].mutate();
@@ -67,12 +59,9 @@ void individual::mutate(double mutation_rate) {
    fitness = 0;
 }
 
-individual individual::crossover(individual a, individual b) {
-   if (a == b) {
-      return a;
-   }
-   individual child;
-   for (unsigned int i=0; i < individual::solution.size(); i++) {
+sequence sequence::crossover(sequence const &a, sequence const &b) {
+   sequence child;
+   for (unsigned int i=0; i < sequence::solution.size(); i++) {
       if (random::probability(0.5)) {
          child.set_gene(i, a.get_gene(i));
       } else {
@@ -80,6 +69,10 @@ individual individual::crossover(individual a, individual b) {
       }
    }
    return child;
+}
+
+bool sequence::operator==(sequence const &other) const /*override*/ {
+   return genes == other.genes;
 }
 
 }
