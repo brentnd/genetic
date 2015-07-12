@@ -50,6 +50,7 @@ public:
 
 private:
    std::vector<gene> genes;
+   int fitness;
 };
 
 }

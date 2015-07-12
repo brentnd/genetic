@@ -16,7 +16,9 @@ void individual::gene::mutate() {
 individual::gene::~gene() {
 }
 
-individual::individual() : genes(individual::solution.size()) {
+individual::individual() :
+   genes(individual::solution.size()),
+   fitness(0) {
 }
 
 int individual::get_gene(int index) const {
@@ -36,15 +38,20 @@ void individual::set_gene(int index, int const chro) {
 }
 
 int individual::get_fitness() const {
-   int fitness = genes.size()*100;
-   int i = 0;
-   for (auto gene : genes) {
-      if (gene.chromosome == solution.at(i)) {
-         fitness += 50;
+   if (fitness != 0) {
+      return fitness;
+   } else {
+      auto fitness_ptr = const_cast<int *>(&fitness);
+      *fitness_ptr = genes.size() * 100;
+      int i = 0;
+      for (auto gene : genes) {
+         if (gene.chromosome == solution.at(i)) {
+            *fitness_ptr += 50;
+         }
+         *fitness_ptr -= std::abs(gene.chromosome - solution.at(i++));
       }
-      fitness -= std::abs(gene.chromosome - solution.at(i++));
+      return fitness;
    }
-   return fitness;
 }
 
 int individual::get_max_fitness() {
@@ -57,6 +64,7 @@ void individual::mutate(double mutation_rate) {
          genes[i].mutate();
       }
    }
+   fitness = 0;
 }
 
 individual individual::crossover(individual a, individual b) {
@@ -71,7 +79,6 @@ individual individual::crossover(individual a, individual b) {
          child.set_gene(i, b.get_gene(i));
       }
    }
-
    return child;
 }
 
