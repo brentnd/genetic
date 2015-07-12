@@ -3,5 +3,13 @@ project(genetic)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
-set(SOURCE_FILES main.cpp)
-add_executable(genetic ${SOURCE_FILES} population.cpp population.hpp individual.cpp individual.hpp)
+set(EXE genetic)
+
+set(SOURCE_FILES
+   src/population.cpp
+   src/individual.cpp)
+set(TEST_FILES
+   test/tests.cpp
+   test/catch.hpp)
+add_executable(${EXE} src/main.cpp ${SOURCE_FILES})
+add_executable(test_${EXE} test/main.cpp ${TEST_FILES} ${SOURCE_FILES})

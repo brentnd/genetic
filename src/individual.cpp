@@ -24,9 +24,9 @@ int individual::get_gene(int index) const {
 }
 
 void individual::print_genes() const {
-   printf("Gene: (%d)",(int)genes.size());
+   printf("Gene: ",(int)genes.size());
    for (auto gene : genes) {
-      printf("|%c",gene.chromosome);
+      printf("%c",gene.chromosome);
    }
    printf("\n");
 }
@@ -51,9 +51,10 @@ int individual::get_max_fitness() {
    return (int)solution.length()*110;
 }
 
-void individual::mutate() {
+void individual::mutate(double mutation_rate) {
    for (int i=0; i < genes.size(); i++) {
-      if ((std::rand() % 10) > 5) {
+      float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
+      if (r < mutation_rate) {
          genes[i].mutate();
       }
    }

@@ -8,6 +8,16 @@ namespace genetic {
 
 class individual {
 public:
+   struct gene {
+      int chromosome;
+
+      gene();
+      void mutate();
+      ~gene();
+      bool operator==(gene const &other) const {
+         return chromosome==other.chromosome;
+      }
+   };
 
    static std::string const solution;
    static std::size_t const gene_size = 8;
@@ -23,7 +33,11 @@ public:
 
    void print_genes() const;
 
-   void mutate();
+   std::vector<gene> const & get_genes() const {
+      return genes;
+   }
+
+   void mutate(double mutation_rate);
 
    static individual crossover(individual a, individual b);
 
@@ -32,16 +46,6 @@ public:
    }
 
 private:
-   struct gene {
-      int chromosome;
-
-      gene();
-      void mutate();
-      ~gene();
-      bool operator==(gene const &other) const {
-         return chromosome==other.chromosome;
-      }
-   };
    std::vector<gene> genes;
 };
 

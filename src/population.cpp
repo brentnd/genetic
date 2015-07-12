@@ -57,7 +57,7 @@ void population::mutate(double mutation_rate) {
    for (auto& ind : individuals) {
       float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
       if (r <= mutation_rate) {
-         ind.mutate();
+         ind.mutate(mutation_rate);
       }
    }
 }

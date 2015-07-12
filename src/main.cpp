@@ -10,7 +10,7 @@ int main() {
    std::srand (time(0));
 
    int max = genetic::individual::get_max_fitness();
-   genetic::population pop(100);
+   genetic::population pop(200);
    int gen = 0;
    int best;
    do {
@@ -21,7 +21,7 @@ int main() {
       if (gen++ > 500) {
          break;
       }
-      pop.evolve(0.0, true);
+      pop.evolve(0.8, true);
    } while (best < max);
    return 0;
 }
