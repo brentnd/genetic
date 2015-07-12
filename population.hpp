@@ -17,6 +17,10 @@ public:
    }
 
    individual get_fittest() const;
+   void dump() const;
+   individual remove_fittest();
+   individual remove(individual const & ind);
+   bool contains(individual const & ind) const;
 
    std::size_t get_size() const {
       return individuals.size();
@@ -26,10 +30,9 @@ public:
 
    void evolve(double mutation_rate, bool elitism);
 
-   individual tournament_selection(std::size_t tsize) const;
-
 private:
    void mutate(double mutation_rate);
+   individual tournament_selection(std::size_t tsize) const;
 
    std::vector<individual> individuals;
 };

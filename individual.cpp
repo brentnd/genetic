@@ -1,3 +1,4 @@
+#include <stdexcept>
 #include "individual.hpp"
 
 namespace genetic {
@@ -59,9 +60,12 @@ void individual::mutate() {
 }
 
 individual individual::crossover(individual a, individual b) {
+   if (a == b) {
+      return a;
+   }
    individual child;
-   float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
    for (unsigned int i=0; i < a.gene_size; i++) {
+      float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
       if (r < 0.5) {
          child.set_gene(i, a.get_gene(i));
       } else {

@@ -54,8 +54,8 @@ void population::evolve(double mutation_rate, bool elitism) {
 }
 
 void population::mutate(double mutation_rate) {
-   float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
    for (auto& ind : individuals) {
+      float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
       if (r <= mutation_rate) {
          ind.mutate();
       }

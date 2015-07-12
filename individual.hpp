@@ -27,6 +27,10 @@ public:
 
    static individual crossover(individual a, individual b);
 
+   bool operator==(individual const &other) const {
+      return genes==other.genes;
+   }
+
 private:
    struct gene {
       int chromosome;
@@ -34,6 +38,9 @@ private:
       gene();
       void mutate();
       ~gene();
+      bool operator==(gene const &other) const {
+         return chromosome==other.chromosome;
+      }
    };
    std::vector<gene> genes;
 };
