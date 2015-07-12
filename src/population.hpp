@@ -79,7 +79,7 @@ private:
    }
    // Mutate entire population slightly
    void mutate(double mutation_rate) {
-      for (auto ind : organisms) {
+      for (auto& ind : organisms) {
          if (random::probability(mutation_rate)) {
             ind.mutate(mutation_rate);
          }
