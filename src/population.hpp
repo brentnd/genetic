@@ -16,24 +16,23 @@ public:
    // New population using T default constructor
    population(std::size_t size) : organisms(size) {
    }
-
    // Get any specific organism
    T get_organism(int index) const {
       organisms.at(index);
    }
-
    // Evolve the population one death, reproduction, and mutation cycle
-   unsigned int evolve(unsigned int generations, int goal, double mutation_rate, bool elitism) {
+   bool evolve(unsigned int generations, int goal, double mutation_rate, bool elitism) {
       int best;
       unsigned int current_generation = 0;
       do {
          auto fittest = get_fittest();
          best = fittest.get_fitness();
+         std::cout << current_generation << ": " << fittest << std::endl;
          evolution_cycle(mutation_rate, elitism);
-      } while ((best < goal) && (++current_generation > generations));
-      return current_generation;
+      } while ((best < goal) && (++current_generation < generations));
+      std::printf("Took %d geneations\n",current_generation);
+      return best >= goal;
    }
-
    // Get the fitness of the entire population
    int get_fitness() const {
       int fitness = 0;
@@ -42,7 +41,6 @@ public:
       }
       return fitness/get_size();
    }
-
    // Get the fittest organism in the population
    T get_fittest() const {
       T fittest = organisms[0];
@@ -53,14 +51,9 @@ public:
       }
       return std::move(fittest);
    }
-
    // Get the size of the population
    std::size_t get_size() const {
       return organisms.size();
-   }
-
-   void store_individual(int index, T const &ind) {
-      organisms[index] = ind;
    }
 
 private:
@@ -73,7 +66,6 @@ private:
          organisms.erase(itr);
       }
    }
-
    // Evolve the population one death, reproduction, and mutation cycle
    void evolution_cycle(double mutation_rate, bool elitism) {
       /* Death phase */
@@ -85,7 +77,6 @@ private:
       /* Mutation phase */
       mutate(mutation_rate);
    }
-
    // Mutate entire population slightly
    void mutate(double mutation_rate) {
       for (auto ind : organisms) {
