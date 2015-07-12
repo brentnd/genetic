@@ -17,10 +17,6 @@ public:
    }
 
    individual get_fittest() const;
-   void dump() const;
-   individual remove_fittest();
-   individual remove(individual const & ind);
-   bool contains(individual const & ind) const;
 
    std::size_t get_size() const {
       return individuals.size();
