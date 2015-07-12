@@ -3,7 +3,7 @@
 
 namespace genetic {
 
-const std::string individual::solution = "solution";
+const std::string individual::solution = "123456789012345678901234567980";
 
 individual::gene::gene() {
    chromosome = std::rand() % 94 + 32;
@@ -16,7 +16,7 @@ void individual::gene::mutate() {
 individual::gene::~gene() {
 }
 
-individual::individual() : genes(individual::gene_size) {
+individual::individual() : genes(individual::solution.size()) {
 }
 
 int individual::get_gene(int index) const {
@@ -24,7 +24,7 @@ int individual::get_gene(int index) const {
 }
 
 void individual::print_genes() const {
-   printf("Gene: ",(int)genes.size());
+   printf("Gene: ");
    for (auto gene : genes) {
       printf("%c",gene.chromosome);
    }
@@ -40,7 +40,7 @@ int individual::get_fitness() const {
    int i = 0;
    for (auto gene : genes) {
       if (gene.chromosome == solution.at(i)) {
-         fitness += 10;
+         fitness += 50;
       }
       fitness -= std::abs(gene.chromosome - solution.at(i++));
    }
@@ -48,7 +48,7 @@ int individual::get_fitness() const {
 }
 
 int individual::get_max_fitness() {
-   return (int)solution.length()*110;
+   return (int)solution.length()*150;
 }
 
 void individual::mutate(double mutation_rate) {
@@ -65,7 +65,7 @@ individual individual::crossover(individual a, individual b) {
       return a;
    }
    individual child;
-   for (unsigned int i=0; i < a.gene_size; i++) {
+   for (unsigned int i=0; i < individual::solution.size(); i++) {
       float r = static_cast <float> (std::rand()) / static_cast <float> (RAND_MAX);
       if (r < 0.5) {
          child.set_gene(i, a.get_gene(i));

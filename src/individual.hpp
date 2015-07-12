@@ -20,7 +20,6 @@ public:
    };
 
    static std::string const solution;
-   static std::size_t const gene_size = 8;
 
    static int get_max_fitness();
 

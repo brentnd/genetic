@@ -37,8 +37,8 @@ void population::evolve(double mutation_rate, bool elitism) {
 
    /* Crossover phase */
    for (unsigned int i = (elitism) ? 1 : 0; i < individuals.size(); i++) {
-      auto a = tournament_selection(individuals.size()/10);
-      auto b = tournament_selection(individuals.size()/10);
+      auto a = tournament_selection(20);
+      auto b = tournament_selection(20);
       individual child = individual::crossover(a,b);
       new_pop.push_back(child);
    }
