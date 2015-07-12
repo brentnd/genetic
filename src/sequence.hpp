@@ -7,6 +7,10 @@ namespace genetic {
 
 class sequence : public organism {
 public:
+   static int get_max_fitness();
+   static sequence crossover(sequence const &a, sequence const &b);
+
+private:
    struct gene {
       int chromosome;
 
@@ -18,34 +22,21 @@ public:
       }
    };
 
-   static int get_max_fitness();
-   static sequence crossover(sequence const &a, sequence const &b);
-
+public:
    sequence();
 
    int get_fitness() const override;
    void mutate(double mutation_rate) override;
+
    bool operator==(sequence const &other) const;
+   friend std::ostream& operator<< (std::ostream& stream, const sequence& ind);
 
-   friend std::ostream& operator<< (std::ostream& stream, const sequence& ind) {
-      stream << "individual f=" << ind.get_fitness() << " (";
-      for (auto gene : ind.genes) {
-         stream << static_cast<char>(gene.chromosome);
-      }
-      stream << ")";
-      return stream;
-   }
-
+private:
    int get_gene(int index) const;
-   std::vector<gene> const & get_genes() const {
-      return genes;
-   }
    void set_gene(int index, int const gene);
 
 private:
-
-   static std::string const solution;
-
+   static std::string solution;
    std::vector<gene> genes;
    int fitness;
 };

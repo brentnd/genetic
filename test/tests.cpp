@@ -61,7 +61,6 @@ TEST_CASE( "Test for genetic::sequence", "[sequence]" ) {
       genetic::sequence a, b;
       // Two random individuals don't match
       REQUIRE_FALSE(a == b);
-      REQUIRE_FALSE(a.get_genes() == b.get_genes());
       REQUIRE_FALSE(a.get_fitness() == b.get_fitness());
    }
 
