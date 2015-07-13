@@ -4,7 +4,7 @@
 namespace genetic {
 
 
-sequence sequence::crossover(sequence const &a, sequence const &b) {
+sequence sequence::breed(sequence const &a, sequence const &b) {
    sequence child;
    for (unsigned int i=0; i < sequence::solution.size(); i++) {
       if (random::probability(0.5)) {

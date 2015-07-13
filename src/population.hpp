@@ -91,7 +91,7 @@ private:
       end_itr -= organisms.size() % 3;
 
       for (auto itr = organisms.begin(); itr != end_itr; itr+=2) {
-         auto child = T::crossover(*itr, *(itr+1));
+         auto child = T::breed(*itr, *(itr+1));
          organisms.push_back(std::move(child));
       }
    }

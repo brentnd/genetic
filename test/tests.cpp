@@ -83,15 +83,15 @@ TEST_CASE( "Test for genetic::sequence", "[sequence]" ) {
       REQUIRE(a_dup.get_fitness() != a.get_fitness());
    }
 
-   SECTION ( "crossover results in differnet children" ) {
+   SECTION ( "breed results in differnet children" ) {
       genetic::sequence a,b;
-      // Crossover (child) doesn't exactly match either parent
-      genetic::sequence child = genetic::sequence::crossover(a, b);
+      // New child doesn't exactly match either parent
+      genetic::sequence child = genetic::sequence::breed(a, b);
       REQUIRE_FALSE(child == a);
       REQUIRE_FALSE(child == b);
 
-      // Crossover (siblings) shouldn't match
-      genetic::sequence sibling = genetic::sequence::crossover(a, b);
+      // Siblings shouldn't match
+      genetic::sequence sibling = genetic::sequence::breed(a, b);
       REQUIRE_FALSE(sibling == child);
       REQUIRE_FALSE(sibling == a);
    }
