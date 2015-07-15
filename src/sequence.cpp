@@ -42,20 +42,18 @@ sequence::sequence() :
 }
 
 int sequence::get_fitness() const {
-   if (fitness != 0) {
-      return fitness;
-   } else {
-      auto fitness_ptr = const_cast<int *>(&fitness);
-      *fitness_ptr = genes.size() * 100;
+   if (fitness == 0) {
+      fitness = genes.size() * 100;
       int i = 0;
       for (auto gene : genes) {
          if (gene.chromosome == solution.at(i)) {
-            *fitness_ptr += 50;
+            fitness += 50;
          }
-         *fitness_ptr -= std::abs(gene.chromosome - solution.at(i++));
+         fitness -= std::abs(gene.chromosome - solution.at(i++));
       }
       return fitness;
    }
+   return fitness;
 }
 void sequence::mutate(double mutation_rate) /*override*/ {
    for (int i=0; i < genes.size(); i++) {

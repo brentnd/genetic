@@ -50,7 +50,7 @@ private:
    // Vecotr of genes
    std::vector<gene> genes;
    // Keep iternal fitness to avoid recalculations
-   int fitness;
+   mutable int fitness;
 };
 
 }
