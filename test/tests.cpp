@@ -163,7 +163,7 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
       pop.evolve(20, genetic::sequence::get_max_fitness(), 0.1, true);
       REQUIRE(pop.get_fittest().get_fitness() >= pop_old.get_fittest().get_fitness());
       REQUIRE(pop.get_fitness() >= pop_old.get_fitness());
-      REQUIRE(pop.get_size() >= pop_old.get_size());
+      REQUIRE(pop.get_size() == pop_old.get_size());
    }
 }
 
@@ -174,6 +174,6 @@ TEST_CASE( "Test for previous results", "[results]" ) {
    SECTION ( "'easy' solution" ) {
       genetic::sequence::set_solution("easy");
       genetic::population<genetic::sequence> pop(99);
-      REQUIRE(pop.evolve(50, genetic::sequence::get_max_fitness(), 0.08, true));
+      REQUIRE(pop.evolve(32, genetic::sequence::get_max_fitness(), 0.08, true));
    }
 }

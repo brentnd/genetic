@@ -14,7 +14,9 @@ template <class T>
 class population {
 public:
    // New population using T default constructor
-   population(std::size_t size) : organisms(size) {
+   population(std::size_t size_) :
+      organisms(size_),
+      size(size_) {
    }
    // Get any specific organism
    T get_organism(int index) const {
@@ -53,14 +55,14 @@ public:
    }
    // Get the size of the population
    std::size_t get_size() const {
-      return organisms.size();
+      return size;
    }
 
 private:
    // Remove one third of the population
    void degenerate()  {
       std::sort (organisms.begin(), organisms.end());
-      auto end_itr = organisms.begin()+(organisms.size()/3);
+      auto end_itr = organisms.begin()+(get_size()/3);
 
       for (auto itr = organisms.begin(); itr != end_itr; itr++) {
          organisms.erase(itr);
@@ -72,7 +74,7 @@ private:
       degenerate();
 
       /* Reproduction phase */
-      regenerate();
+      regenerate(10 /* TODO: unhard-code */);
 
       /* Mutation phase */
       mutate(mutation_rate);
@@ -86,18 +88,24 @@ private:
       }
    }
    // Use 2/3 population to regenerate missing 1/3
-   void regenerate() {
-      auto end_itr = organisms.end();
-      end_itr -= organisms.size() % 3;
+   void regenerate(unsigned int tournament_size) {
 
-      for (auto itr = organisms.begin(); itr != end_itr; itr+=2) {
-         auto child = T::breed(*itr, *(itr+1));
+      unsigned int ssize = organisms.size();
+      while (organisms.size() < get_size()) {
+         std::vector<T> tournament;;
+         for (auto i : random::i_range(0, ssize, tournament_size, true)) {
+            tournament.push_back(organisms.at(i));
+         }
+         std::sort(tournament.begin(), tournament.end());
+
+         auto child = T::breed(tournament.end()[-1], tournament.end()[-2]);
          organisms.push_back(std::move(child));
       }
    }
 
    // Storage for all organisms
    std::vector<T> organisms;
+   unsigned int size;
 };
 
 } // namespace genetic
