@@ -1,5 +1,7 @@
 #include "catch.hpp"
 
+#include <algorithm>
+
 #include "../src/population.hpp"
 #include "../src/random.hpp"
 #include "../src/sequence.hpp"
@@ -51,6 +53,38 @@ TEST_CASE( "Test for random", "[random]" ) {
       random::set_seed(3);
       int rand_2 = random::i_range(0, 100);
       REQUIRE(rand_1 != rand_2);
+   }
+
+   SECTION ( "random vector all within range" ) {
+      random::set_seed(2);
+      auto rand_set = random::i_range(0, 100, 20);
+      // Check the size
+      REQUIRE(rand_set.size() == 20);
+      // Check the range
+      for (auto i : rand_set) {
+         CHECK(i <= 100);
+         CHECK(i >= 0);
+      }
+   }
+
+   SECTION ( "random vector all unique" ) {
+      random::reset();
+      auto rand_set = random::i_range(0, 100, 20, true);
+      // Check the size
+      REQUIRE(rand_set.size() == 20);
+      // Check for uniqueness
+      sort( rand_set.begin(), rand_set.end() );
+      REQUIRE( adjacent_find(rand_set.begin(), rand_set.end() ) == rand_set.end() );
+      // Check the range
+      for (auto i : rand_set) {
+         CHECK(i <= 100);
+         CHECK(i >= 0);
+      }
+   }
+
+   SECTION ( "random vector invalid range" ) {
+      random::reset();
+      REQUIRE_THROWS(random::i_range(0, 5, 20, true));
    }
 }
 

@@ -4,6 +4,7 @@
 #include <ctime>
 #include <random>
 #include <stdexcept>
+#include <vector>
 
 class random {
 public:
@@ -11,6 +12,7 @@ public:
    static void reset();
    static bool probability(double prob);
    static int i_range(int low, int high);
+   static std::vector<int> i_range(int low, int high, unsigned int count, bool unique=false);
    static float f_range(float low, float high);
 private:
    static void initialize();
