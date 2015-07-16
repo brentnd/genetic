@@ -15,7 +15,7 @@ set(SOURCE_FILES
 
 set(TEST_FILES
    test/tests.cpp
-   test/catch.hpp)
+   /usr/local/include/catch.hpp)
 
 add_executable(${EXE} src/main.cpp ${SOURCE_FILES})
 add_executable(${TEXT_EXE} test/main.cpp ${TEST_FILES} ${SOURCE_FILES})
