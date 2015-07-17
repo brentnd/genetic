@@ -2,51 +2,58 @@
 
 #include <algorithm>
 
-unsigned int random::seed = 0;
+unsigned int random::seed_value = 0;
 
-void random::set_seed(unsigned int seed) {
-   random::seed = seed;
+void random::seed() {
+   seed( static_cast<unsigned int>(std::time(0)) );
+}
+
+void random::seed(unsigned int seed) {
+   random::seed_value = seed;
    initialize();
 }
+
 void random::reset() {
-   if (seed == 0) {
-      seed = static_cast<unsigned int>(time(0));
-   }
    initialize();
 }
-bool random::probability(double prob) {
-   float r = f_range(0,1);
-   return r <= prob;
+
+bool random::probability(double probability_) {
+   float r = uniform(0, 1);
+   return r <= probability_;
 }
-int random::i_range(int low, int high) {
-   if (high < low) {
+
+int random::randint(int a, int b) {
+   if (b < a) {
       throw std::runtime_error("Invalid range");
    }
-   int range = high - low;
-   return std::rand() % range + low;
+   int range = b - a;
+   return std::rand() % range + a;
 }
-std::vector<int> random::i_range(int low, int high, unsigned int count, bool unique) {
-   if (unique && (high-low) < count) {
+
+float random::uniform(float a, float b) {
+   if (b < a) {
+      throw std::runtime_error("Invalid range");
+   }
+   float range = b - a;
+   float r = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+   return r * range - a;
+}
+
+std::vector<int> random::sample(int a, int b, unsigned int k, bool unique) {
+   if (unique && (b - a) < k) {
       throw std::runtime_error("random vector unique but range is less than count");
    }
 
    std::vector<int> rand_is;
-   while (rand_is.size() < count) {
-      int rand_i = i_range(low, high);
+   while (rand_is.size() < k) {
+      int rand_i = randint(a, b);
       if (!unique || std::find(rand_is.begin(), rand_is.end(), rand_i) == rand_is.end()) {
          rand_is.push_back(rand_i);
       }
    }
    return rand_is;
 }
-float random::f_range(float low, float high) {
-   if (high < low) {
-      throw std::runtime_error("Invalid range");
-   }
-   float range = high - low;
-   float r = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
-   return r * range - low;
-}
+
 void random::initialize() {
-   std::srand(seed);
+   std::srand(seed_value);
 }

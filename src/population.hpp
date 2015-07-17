@@ -93,7 +93,7 @@ private:
       unsigned int ssize = organisms.size();
       while (organisms.size() < get_size()) {
          std::vector<T> tournament;;
-         for (auto i : random::i_range(0, ssize, tournament_size, true)) {
+         for (auto i : random::sample(0, ssize, tournament_size, true)) {
             tournament.push_back(organisms.at(i));
          }
          std::sort(tournament.begin(), tournament.end());

@@ -26,11 +26,11 @@ void sequence::set_solution(std::string const & solution) {
 }
 
 sequence::gene::gene() {
-   chromosome = random::i_range(32, 126);
+   chromosome = random::randint(32, 126);
 }
 
 void sequence::gene::mutate() {
-   chromosome += random::i_range(-10, 10);
+   chromosome += random::randint(-10, 10);
 }
 
 sequence::gene::~gene() {
