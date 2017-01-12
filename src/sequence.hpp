@@ -47,9 +47,9 @@ private:
 private:
    // Solution sequence
    static std::string solution;
-   // Vecotr of genes
+   // Vector of genes
    std::vector<gene> genes;
-   // Keep iternal fitness to avoid recalculations
+   // Keep internal fitness to avoid recalculations
    mutable int fitness;
 };
 

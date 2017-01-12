@@ -14,7 +14,7 @@ public:
     *    If x is omitted or None, current system time is used
     */
    static void seed();
-   static void seed(unsigned int x);
+   static void seed(unsigned x);
 
    /*
     * Reseed the random generator with the stored seed.
@@ -33,7 +33,7 @@ public:
    /*
     * Return a k length list of unique (or not) elements chosen from the range.
     */
-   static std::vector<int> sample(int a, int b, unsigned int k, bool unique = false);
+   static std::vector<int> sample(int a, int b, unsigned k, bool unique = false);
 
    /*
     * Return a random floating point number N such that a <= N <= b.
@@ -43,7 +43,7 @@ public:
    static float uniform(float a, float b);
 private:
    static void initialize();
-   static unsigned int seed_value;
+   static unsigned seed_value;
 };
 
 

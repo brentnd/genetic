@@ -18,14 +18,16 @@ public:
       organisms(size_),
       size(size_) {
    }
+
    // Get any specific organism
    T get_organism(int index) const {
       organisms.at(index);
    }
+
    // Evolve the population one death, reproduction, and mutation cycle
-   bool evolve(unsigned int generations, int goal, double mutation_rate, bool elitism) {
+   bool evolve(unsigned generations, int goal, double mutation_rate, bool elitism) {
       int best;
-      unsigned int current_generation = 0;
+      unsigned current_generation = 0;
       do {
          auto fittest = get_fittest();
          best = fittest.get_fitness();
@@ -35,14 +37,16 @@ public:
       std::printf("Took %d geneations\n",current_generation);
       return best >= goal;
    }
+
    // Get the fitness of the entire population
    int get_fitness() const {
       int fitness = 0;
-      for (auto ind : organisms) {
-         fitness += ind.get_fitness();
+      for (auto const & individual : organisms) {
+         fitness += individual.get_fitness();
       }
-      return fitness/get_size();
+      return static_cast<int>(fitness / get_size());
    }
+
    // Get the fittest organism in the population
    T get_fittest() const {
       T fittest = organisms[0];
@@ -53,6 +57,7 @@ public:
       }
       return std::move(fittest);
    }
+
    // Get the size of the population
    std::size_t get_size() const {
       return size;
@@ -61,39 +66,38 @@ public:
 private:
    // Remove one third of the population
    void degenerate()  {
-      std::sort (organisms.begin(), organisms.end());
+      std::sort(organisms.begin(), organisms.end());
       auto end_itr = organisms.begin()+(get_size()/3);
-
-      for (auto itr = organisms.begin(); itr != end_itr; itr++) {
-         organisms.erase(itr);
-      }
+      organisms.erase(organisms.begin(), end_itr);
    }
+
    // Evolve the population one death, reproduction, and mutation cycle
    void evolution_cycle(double mutation_rate, bool elitism) {
-      /* Death phase */
+      // Death phase
       degenerate();
 
-      /* Reproduction phase */
+      // Reproduction phase
       regenerate(10 /* TODO: unhard-code */);
 
-      /* Mutation phase */
+      /// Mutation phase
       mutate(mutation_rate);
    }
+
    // Mutate entire population slightly
    void mutate(double mutation_rate) {
-      for (auto& ind : organisms) {
+      for (auto & ind : organisms) {
          if (random::probability(mutation_rate)) {
             ind.mutate(mutation_rate);
          }
       }
    }
-   // Use 2/3 population to regenerate missing 1/3
-   void regenerate(unsigned int tournament_size) {
 
-      unsigned int ssize = organisms.size();
+   // Use 2/3 population to regenerate missing 1/3
+   void regenerate(unsigned tournament_size) {
+      std::size_t size = organisms.size();
       while (organisms.size() < get_size()) {
          std::vector<T> tournament;;
-         for (auto i : random::sample(0, ssize, tournament_size, true)) {
+         for (auto i : random::sample(0, size, tournament_size, true)) {
             tournament.push_back(organisms.at(i));
          }
          std::sort(tournament.begin(), tournament.end());
@@ -103,9 +107,10 @@ private:
       }
    }
 
+private:
    // Storage for all organisms
    std::vector<T> organisms;
-   unsigned int size;
+   unsigned size;
 };
 
 } // namespace genetic

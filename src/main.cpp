@@ -10,8 +10,8 @@
 int main( int argc, char * const * argv ) {
    // Parameter defaults
    bool elitism = false;
-   unsigned int max_generations = 500;
-   unsigned int population_size = 999;
+   unsigned max_generations = 500;
+   unsigned population_size = 999;
    double mutation_rate = 0.1;
 
    ::opterr = 0;

@@ -2,13 +2,13 @@
 
 #include <algorithm>
 
-unsigned int random::seed_value = 0;
+/*static*/ unsigned random::seed_value = 0;
 
 void random::seed() {
-   seed( static_cast<unsigned int>(std::time(0)) );
+   seed( static_cast<unsigned>(std::time(0)) );
 }
 
-void random::seed(unsigned int seed) {
+void random::seed(unsigned seed) {
    random::seed_value = seed;
    initialize();
 }
@@ -39,7 +39,7 @@ float random::uniform(float a, float b) {
    return r * range - a;
 }
 
-std::vector<int> random::sample(int a, int b, unsigned int k, bool unique) {
+std::vector<int> random::sample(int a, int b, unsigned k, bool unique) {
    if (unique && (b - a) < k) {
       throw std::runtime_error("random vector unique but range is less than count");
    }
@@ -54,6 +54,6 @@ std::vector<int> random::sample(int a, int b, unsigned int k, bool unique) {
    return rand_is;
 }
 
-void random::initialize() {
+/*static*/ void random::initialize() {
    std::srand(seed_value);
 }
