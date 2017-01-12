@@ -1,6 +1,6 @@
 #!/bin/bash
 (
-   mkdir target
+   mkdir -p target
    cd target
    cmake ../
    make -j4
