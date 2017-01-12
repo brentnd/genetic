@@ -1,6 +1,6 @@
 ## [genetic] synopsis
 
-Start of simple genetic algorithm with goal of using to do neural network population evolution.
+Messing around with simple genetic algorithm.
 
 All source files found in `src/`
 
