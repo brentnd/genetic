@@ -4,113 +4,101 @@
 #include <algorithm>
 #include <cstdlib>
 #include <vector>
+#include <cassert>
 
 #include "organism.hpp"
 #include "random.hpp"
 
 namespace genetic {
 
-template <class T>
 class population {
 public:
-   // New population using T default constructor
    population(std::size_t size_) :
-      organisms(size_),
-      size(size_) {
+         organisms(size_) {
    }
 
-   // Get any specific organism
-   T get_organism(int index) const {
-      organisms.at(index);
+   population(population const & pop) :
+         organisms(pop.organisms) {
    }
 
-   // Evolve the population one death, reproduction, and mutation cycle
-   bool evolve(unsigned generations, int goal, double mutation_rate, bool elitism) {
-      int best;
-      unsigned current_generation = 0;
-      do {
-         auto fittest = get_fittest();
-         best = fittest.get_fitness();
-         std::cout << current_generation << ": " << fittest << std::endl;
-         evolution_cycle(mutation_rate, elitism);
-      } while ((best < goal) && (++current_generation < generations));
-      std::printf("Took %d geneations\n",current_generation);
-      return best >= goal;
-   }
-
-   // Get the fitness of the entire population
-   int get_fitness() const {
-      int fitness = 0;
-      for (auto const & individual : organisms) {
-         fitness += individual.get_fitness();
+   // Generate an entirely new population by random selection
+   population select_random(std::size_t k) {
+      auto selected(random::sample(0, size() - 1, k, false /* not unique */));
+      population random_organisms(k);
+      unsigned i=0;
+      for (auto const & index : selected) {
+         // Copy from this population to the new one
+         random_organisms.organisms[i] = organisms[k];
       }
-      return static_cast<int>(fitness / get_size());
+      return std::move(random_organisms);
    }
 
-   // Get the fittest organism in the population
-   T get_fittest() const {
-      T fittest = organisms[0];
-      for (auto ind : organisms) {
-         if (fittest.get_fitness() < ind.get_fitness()) {
-            fittest = ind;
+   // Generate an entirely new population by selecting best
+   population select_best(std::size_t k) {
+      population best_organisms(k);
+      std::partial_sort_copy(organisms.begin(), organisms.end(),
+                             best_organisms.organisms.begin(), best_organisms.organisms.end(),
+                             std::greater<organism>());
+      return std::move(best_organisms);
+   }
+
+   // Generate an entirely new population by selecting worst
+   population select_worst(std::size_t k) {
+      population worst_organisms(k);
+      std::partial_sort_copy(organisms.begin(), organisms.end(),
+                             worst_organisms.organisms.begin(), worst_organisms.organisms.end());
+      return std::move(worst_organisms);
+   }
+
+   // Generate an entirely new population by tournament selection
+   population select_tournament(std::size_t k, std::size_t tournament_size) {
+      population tournament_champions(0);
+      while (k-- > 0) {
+         auto aspirants(select_random(tournament_size));
+         tournament_champions.organisms.push_back(
+               std::move(*std::max_element(aspirants.organisms.begin(), aspirants.organisms.end())));
+      }
+      assert(tournament_champions.size() == k);
+      return std::move(tournament_champions);
+   }
+
+   void crossover_and_mutate(float crossover_rate, float mutation_rate) {
+      for (unsigned i=1; i < size(); i += 2) {
+         if (random::probability(crossover_rate)) {
+            organism::mate(&organisms[i - 1], &organisms[i]);
          }
       }
-      return std::move(fittest);
+
+      for (auto & individual : organisms) {
+         if (random::probability(mutation_rate)) {
+            individual.mutate(mutation_rate /* TODO: should be separate attr mutation prob */);
+         }
+      }
+   }
+
+   void evolve(unsigned generations) {
+      for (unsigned gen=0; gen < generations; gen++) {
+         // TODO: how to vary select type?
+         auto offspring(select_best(size()));
+         offspring.crossover_and_mutate(0.2 /* TODO: crossover rate */, 0.08 /* TODO: mutation rate */);
+         offspring.evaluate();
+         organisms = offspring.organisms;
+      }
+   }
+
+   // Evaluate all individuals
+   void evaluate() {
+      std::for_each(organisms.begin(), organisms.end(), std::bind1st(std::mem_fun(&organism::evaluate), this));
    }
 
    // Get the size of the population
-   std::size_t get_size() const {
-      return size;
+   std::size_t size() const {
+      return organisms.size();
    }
 
 private:
-   // Remove one third of the population
-   void degenerate()  {
-      std::sort(organisms.begin(), organisms.end());
-      auto end_itr = organisms.begin()+(get_size()/3);
-      organisms.erase(organisms.begin(), end_itr);
-   }
-
-   // Evolve the population one death, reproduction, and mutation cycle
-   void evolution_cycle(double mutation_rate, bool elitism) {
-      // Death phase
-      degenerate();
-
-      // Reproduction phase
-      regenerate(10 /* TODO: unhard-code */);
-
-      /// Mutation phase
-      mutate(mutation_rate);
-   }
-
-   // Mutate entire population slightly
-   void mutate(double mutation_rate) {
-      for (auto & ind : organisms) {
-         if (random::probability(mutation_rate)) {
-            ind.mutate(mutation_rate);
-         }
-      }
-   }
-
-   // Use 2/3 population to regenerate missing 1/3
-   void regenerate(unsigned tournament_size) {
-      std::size_t size = organisms.size();
-      while (organisms.size() < get_size()) {
-         std::vector<T> tournament;;
-         for (auto i : random::sample(0, size, tournament_size, true)) {
-            tournament.push_back(organisms.at(i));
-         }
-         std::sort(tournament.begin(), tournament.end());
-
-         auto child = T::breed(tournament.end()[-1], tournament.end()[-2]);
-         organisms.push_back(std::move(child));
-      }
-   }
-
-private:
-   // Storage for all organisms
-   std::vector<T> organisms;
-   unsigned size;
+   // Storage for all individuals in this population
+   std::vector<organism> organisms;
 };
 
 } // namespace genetic

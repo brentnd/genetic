@@ -7,8 +7,6 @@ namespace genetic {
 
 class sequence : public organism {
 public:
-   // Breed two sequences together (crossover)
-   static sequence breed(sequence const &a, sequence const &b);
    // Calculate fitness of correct sequence
    static int get_max_fitness();
    // Change the solution
@@ -39,6 +37,13 @@ public:
    // Override == operator for comparison of genes
    bool operator==(sequence const &other) const;
    friend std::ostream& operator<< (std::ostream& stream, const sequence& ind);
+
+   virtual std::iterator begin() override {
+      return genes.begin();
+   }
+   virtual std::iterator end() override {
+      return genes.end();
+   }
 
 private:
    int get_gene(int index) const;

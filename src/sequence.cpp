@@ -6,18 +6,6 @@ namespace genetic {
 // Default solution
 /*static*/ std::string sequence::solution = "123456789012345678901234567980";
 
-/*static*/ sequence sequence::breed(sequence const & a, sequence const & b) {
-   sequence child;
-   for (unsigned i=0; i < sequence::solution.size(); i++) {
-      if (random::probability(0.5)) {
-         child.set_gene(i, a.get_gene(i));
-      } else {
-         child.set_gene(i, b.get_gene(i));
-      }
-   }
-   return child;
-}
-
 /*static*/ int sequence::get_max_fitness() {
    return static_cast<int>(solution.length() * 150);
 }
