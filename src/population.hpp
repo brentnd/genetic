@@ -65,13 +65,13 @@ public:
    void crossover_and_mutate(float crossover_rate, float mutation_rate) {
       for (unsigned i=1; i < size(); i += 2) {
          if (random::probability(crossover_rate)) {
-            organism::mate(&organisms[i - 1], &organisms[i]);
+            organism_base::mate(organisms[i - 1], organisms[i]);
          }
       }
 
       for (auto & individual : organisms) {
          if (random::probability(mutation_rate)) {
-            individual.mutate(mutation_rate /* TODO: should be separate attr mutation prob */);
+            individual->mutate(mutation_rate /* TODO: should be separate attr mutation prob */);
          }
       }
    }
@@ -88,7 +88,9 @@ public:
 
    // Evaluate all individuals
    void evaluate() {
-      std::for_each(organisms.begin(), organisms.end(), std::bind1st(std::mem_fun(&organism::evaluate), this));
+      for (auto organism_ptr : organisms) {
+         organism_ptr->evaluate();
+      }
    }
 
    // Get the size of the population
@@ -98,7 +100,7 @@ public:
 
 private:
    // Storage for all individuals in this population
-   std::vector<organism> organisms;
+   std::vector<organism_base *> organisms;
 };
 
 } // namespace genetic
