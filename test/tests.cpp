@@ -194,6 +194,7 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
 TEST_CASE( "Test for genetic::population", "[population]" ) {
    // Predictable random tests (that passed before)
    random::seed(1);
+   genetic::individual::evaluation_method(&genetic::individual::eval_sum);
 
    SECTION ( "population size constant through evoluation, factor of 3" ) {
       genetic::population pop(99);

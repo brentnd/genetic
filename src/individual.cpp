@@ -3,11 +3,7 @@
 
 namespace genetic {
 
-/*static*/ std::function<int(individual const &)> individual::evaluation_function = [] (individual const & ind) -> int {
-   return std::accumulate(ind.attributes.begin(), ind.attributes.end(), 0, [](int current_sum, attribute const & attr) {
-      return current_sum + attr.value;
-   });
-};
+/*static*/ std::function<int(individual const &)> individual::evaluation_function = &individual::eval_sum;
 /*static*/ std::function<void(individual *, individual *)> individual::mating_function = &individual::two_point_crossover;
 /*static*/ std::function<void(individual &)> individual::mutation_function =
       std::bind(&individual::shuffle_indexes, std::placeholders::_1, static_cast<float>(0.05));
@@ -98,14 +94,17 @@ void individual::shuffle_indexes(float mutation_rate) {
 }
 
 int individual::evaluate() {
-   if (!evaluation_function) {
-      throw std::runtime_error("individual has no evaluation function");
-   }
    if (!valid_fitness) {
       fitness = evaluation_function(*this);
       valid_fitness = true;
    }
    return fitness;
+}
+
+/*static*/ int individual::eval_sum(individual const & ind) {
+   return std::accumulate(ind.attributes.begin(), ind.attributes.end(), 0, [] (int current_sum, attribute const & attr) {
+      return current_sum + attr.value;
+   });
 }
 
 bool individual::operator<(individual const & other) const {

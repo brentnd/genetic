@@ -8,6 +8,9 @@ namespace genetic {
 
 population::population(std::size_t size_) :
       individuals(size_) {
+   for (auto & ind : individuals) {
+      ind.seed();
+   }
 }
 
 population::population(population const & pop) :
