@@ -68,7 +68,7 @@ void population::crossover(float crossover_rate) {
 void population::mutate(float mutation_rate) {
    for (auto & individual : individuals) {
       if (random::probability(mutation_rate)) {
-         individual.mutate(mutation_rate /* TODO: should be separate attr mutation prob */);
+         individual.mutate();
       }
    }
 }

@@ -9,6 +9,8 @@ namespace genetic {
    });
 };
 /*static*/ std::function<void(individual *, individual *)> individual::mating_function = &individual::two_point_crossover;
+/*static*/ std::function<void(individual &)> individual::mutation_function =
+      std::bind(&individual::shuffle_indexes, std::placeholders::_1, static_cast<float>(0.05));
 /*static*/ std::size_t individual::attribute_count = 100;
 
 individual::individual() :
@@ -26,7 +28,7 @@ individual::individual() :
    size = std::min(ind1->size(), ind2->size());
    point = random::randint(1, size - 1);
    // Swap point1: between individual 1 and 2
-   std::swap_ranges(ind1->begin() + point, ind1->end(), ind2->begin() + point);
+   std::swap_ranges(ind1->attributes.begin() + point, ind1->attributes.end(), ind2->attributes.begin() + point);
 
    ind1->valid_fitness = false;
    ind2->valid_fitness = false;
@@ -43,7 +45,7 @@ individual::individual() :
       std::swap(point1, point2);
    }
    // Swap point1:point2 between individual 1 and 2
-   std::swap_ranges(ind1->begin() + point1, ind1->begin() + point2, ind2->begin() + point1);
+   std::swap_ranges(ind1->attributes.begin() + point1, ind1->attributes.begin() + point2, ind2->attributes.begin() + point1);
 
    ind1->valid_fitness = false;
    ind2->valid_fitness = false;
@@ -53,10 +55,43 @@ individual::individual() :
    evaluation_function = std::move(fcn);
 }
 
-void individual::mutate(float mutation_rate) {
-   for (auto & attr : *this) {
+void individual::seed() {
+   for (auto & attr : attributes) {
+      attr.seed();
+   }
+}
+
+void individual::mutate() {
+   mutation_function(*this);
+}
+
+void individual::uniform_int(float mutation_rate, int min, int max) {
+   for (auto & attr : attributes) {
       if (random::probability(mutation_rate)) {
-         attr = attribute();
+         attr.randomize(min, max);
+      }
+   }
+   valid_fitness = false;
+}
+
+void individual::flip_bit(float mutation_rate) {
+   for (auto & attr : attributes) {
+      if (random::probability(mutation_rate)) {
+         attr.flip();
+      }
+   }
+   valid_fitness = false;
+}
+
+void individual::shuffle_indexes(float mutation_rate) {
+   unsigned swap_index;
+   for (unsigned i=0; i < size(); ++i) {
+      if (random::probability(mutation_rate)) {
+         swap_index = static_cast<unsigned>(random::randint(0, size() - 2));
+         if (swap_index >= i) {
+            ++swap_index;
+         }
+         std::swap(attributes.at(i), attributes.at(swap_index));
       }
    }
    valid_fitness = false;
@@ -86,14 +121,6 @@ bool individual::operator>(individual const & other) const {
 bool individual::operator==(individual const & other) const {
    throw_if_fitness_invalid(); other.throw_if_fitness_invalid();
    return attributes == other.attributes;
-}
-
-std::vector<attribute>::iterator individual::begin() {
-   return attributes.begin();
-}
-
-std::vector<attribute>::iterator individual::end() {
-   return attributes.end();
 }
 
 std::size_t individual::size() const {

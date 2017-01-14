@@ -92,6 +92,7 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
    random::seed(1);
    SECTION ( "genes of two rand inits are different" ) {
       genetic::individual a, b;
+      a.seed(); b.seed();
       a.evaluate(); b.evaluate();
       // Two random individuals don't match
       REQUIRE_FALSE(a == b);
@@ -105,17 +106,20 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       genetic::individual a_dup = a;
       REQUIRE(a_dup == a);
       // Mutate (0 = none)
-      a.mutate(0.0);
+      genetic::individual::mutation_method(&genetic::individual::flip_bit, static_cast<float>(0.0));
+      a.mutate();
       a.evaluate();
       REQUIRE(a_dup == a);
       REQUIRE(a_dup.evaluate() == a.evaluate());
       // Mutation > 0.0 should modify genes
-      a.mutate(0.5);
+      genetic::individual::mutation_method(&genetic::individual::flip_bit, static_cast<float>(0.5));
+      a.mutate();
       a.evaluate();
       REQUIRE_FALSE(a_dup == a);
       REQUIRE(a_dup.evaluate() != a.evaluate());
       // Mutation == 1.0 should modify again
-      a.mutate(1.0);
+      genetic::individual::mutation_method(&genetic::individual::flip_bit, static_cast<float>(1.0));
+      a.mutate();
       a.evaluate();
       REQUIRE_FALSE(a_dup == a);
       REQUIRE(a_dup.evaluate() != a.evaluate());
@@ -123,6 +127,7 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
 
    SECTION ( "mating results in different children" ) {
       genetic::individual a, b;
+      a.seed(); b.seed();
       a.evaluate(); b.evaluate();
       genetic::individual a_old = a, b_old = b;
       genetic::individual::mate(&a, &b);
@@ -134,6 +139,7 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
    SECTION ( "custom mating function can be set" ) {
       genetic::individual::mating_method(&genetic::individual::one_point_crossover);
       genetic::individual a, b;
+      a.seed(); b.seed();
       a.evaluate(); b.evaluate();
       genetic::individual a_old = a, b_old = b;
       genetic::individual::mate(&a, &b);
@@ -142,8 +148,15 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE_FALSE(b == b_old);
    }
 
+   SECTION ( "custom mutation function can be set" ) {
+      genetic::individual::mutation_method(&genetic::individual::flip_bit, static_cast<float>(0.5));
+      genetic::individual a;
+      REQUIRE(a.evaluate() == 0);
+      a.mutate();
+      REQUIRE(a.evaluate() != 0);
+   }
+
    SECTION ( "custom evaluation function can be set" ) {
-      genetic::individual::mating_method(&genetic::individual::one_point_crossover);
       genetic::individual::evaluation_method([] (genetic::individual const & ind) -> int {
          return 42;
       });
@@ -165,7 +178,7 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE_THROWS(a < b);
 
       // A mutation caused invalid, but B valid
-      a.mutate(0.5);
+      a.mutate();
       b.evaluate();
       REQUIRE_THROWS(a == b);
       REQUIRE_THROWS(a > b);
@@ -227,6 +240,7 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
    }
 
    SECTION ( "20 evolution cycles" ) {
+      genetic::individual::mutation_method(&genetic::individual::uniform_int, static_cast<float>(0.1), static_cast<int>(0), static_cast<int>(100));
       genetic::population pop(99);
       pop.evaluate();
       auto pop_old = pop;

@@ -23,13 +23,24 @@ public:
    static void two_point_crossover(individual * ind1, individual * ind2);
 
    static void evaluation_method(std::function<int(individual const &)> && fcn);
+
    template <typename... Args>
    static void mating_method(void (*fcn)(individual *, individual *, Args...), Args... args) {
       mating_function = std::bind(fcn, std::placeholders::_1, std::placeholders::_2, std::forward<Args>(args)...);
    }
 
+   template <typename... Args>
+   static void mutation_method(void (individual::* fcn)(Args...), Args... args) {
+      mutation_function = std::bind(fcn, std::placeholders::_1, std::forward<Args>(args)...);
+   }
+
+   void seed();
+
    // Mutate in-place by with random attributes
-   void mutate(float mutation_rate);
+   void mutate();
+   void uniform_int(float mutation_rate, int min, int max);
+   void flip_bit(float mutation_rate);
+   void shuffle_indexes(float mutation_rate);
 
    int evaluate();
 
@@ -38,10 +49,6 @@ public:
    bool operator>(individual const & other) const;
 
    bool operator==(individual const & other) const;
-
-   std::vector<attribute>::iterator begin();
-
-   std::vector<attribute>::iterator end();
 
    std::size_t size() const;
 
@@ -53,6 +60,7 @@ public:
 private:
    static std::function<int(individual const &)> evaluation_function;
    static std::function<void(individual *, individual *)> mating_function;
+   static std::function<void(individual &)> mutation_function;
    static std::size_t attribute_count;
    void throw_if_fitness_invalid() const;
 

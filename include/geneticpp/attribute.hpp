@@ -8,8 +8,21 @@ namespace genetic {
 struct attribute {
    int value;
 
-   attribute() {
-      value = random::randint(0, 100);
+   attribute() :
+         value(0) {
+   }
+
+   void seed() {
+      // TODO: attribute seeding function
+      randomize(0, 100);
+   }
+
+   void randomize(int min, int max) {
+      value = random::randint(min, max);
+   }
+
+   void flip() {
+      value = !value;
    }
 
    bool operator==(attribute const & other) const {
