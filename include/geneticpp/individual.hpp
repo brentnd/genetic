@@ -16,33 +16,37 @@ class individual {
 public:
    individual();
 
-   // Both modified in place (two-point crossover)
-   static void mate(individual * ind1, individual * ind2);
-
-   static void one_point_crossover(individual * ind1, individual * ind2);
-   static void two_point_crossover(individual * ind1, individual * ind2);
-
-   static void evaluation_method(std::function<int(individual const &)> && fcn);
-
+   // Mating
    template <typename... Args>
    static void mating_method(void (*fcn)(individual *, individual *, Args...), Args... args) {
       mating_function = std::bind(fcn, std::placeholders::_1, std::placeholders::_2, std::forward<Args>(args)...);
    }
 
+   // Mate two individuals using static method
+   static void mate(individual * ind1, individual * ind2);
+   // Mating variants for mating_method
+   static void one_point_crossover(individual * ind1, individual * ind2);
+   static void two_point_crossover(individual * ind1, individual * ind2);
+
+   // Evaluate this individuals fitness
+   int evaluate();
+   // Custom function for evaluation
+   static void evaluation_method(std::function<int(individual const &)> && fcn);
+
+   // Mutation
    template <typename... Args>
    static void mutation_method(void (individual::* fcn)(Args...), Args... args) {
       mutation_function = std::bind(fcn, std::placeholders::_1, std::forward<Args>(args)...);
    }
-
-   void seed();
-
-   // Mutate in-place by with random attributes
+   // Mutate this individual using mutation method
    void mutate();
+   // Mutation variants for mutation_method
    void uniform_int(float mutation_rate, int min, int max);
    void flip_bit(float mutation_rate);
    void shuffle_indexes(float mutation_rate);
 
-   int evaluate();
+   // Initialize the attributes by seeding them
+   void seed();
 
    bool operator<(individual const & other) const;
 
