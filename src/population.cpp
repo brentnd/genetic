@@ -3,6 +3,8 @@
 namespace genetic {
 
 /*static*/ std::function<population(population const &, std::size_t k)> population::selection_function = &population::select_best;
+/*static*/ std::function<void(population &)> population::evolution_function =
+      std::bind(&population::crossover_and_mutate, std::placeholders::_1, static_cast<float>(0.5), static_cast<float>(0.1));
 
 population::population(std::size_t size_) :
       individuals(size_) {
@@ -51,12 +53,19 @@ population population::select_tournament(std::size_t k, std::size_t tournament_s
 }
 
 void population::crossover_and_mutate(float crossover_rate, float mutation_rate) {
+   crossover(crossover_rate);
+   mutate(mutation_rate);
+}
+
+void population::crossover(float crossover_rate) {
    for (unsigned i=1; i < size(); i += 2) {
       if (random::probability(crossover_rate)) {
          individual::mate(&individuals[i - 1], &individuals[i]);
       }
    }
+}
 
+void population::mutate(float mutation_rate) {
    for (auto & individual : individuals) {
       if (random::probability(mutation_rate)) {
          individual.mutate(mutation_rate /* TODO: should be separate attr mutation prob */);
@@ -69,7 +78,7 @@ void population::evolve(unsigned generations) {
       evaluate();
       print_stats(gen);
       auto offspring(selection_function(*this, size()));
-      offspring.crossover_and_mutate(0.2 /* TODO: crossover rate */, 0.08 /* TODO: mutation rate */);
+      evolution_function(offspring);
       offspring.evaluate();
       individuals = offspring.individuals;
    }

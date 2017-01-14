@@ -23,6 +23,11 @@ public:
       selection_function = std::bind(fcn, std::placeholders::_1, std::placeholders::_2, std::forward<Args>(args)...);
    }
 
+   template <typename... Args>
+   static void evolution_method(void (population::* fcn)(Args...), Args... args) {
+      evolution_function = std::bind(fcn, std::placeholders::_1, std::forward<Args>(args)...);
+   }
+
    // Generate an entirely new population by random selection
    population select_random(std::size_t k) const;
 
@@ -36,6 +41,8 @@ public:
    population select_tournament(std::size_t k, std::size_t tournament_size) const;
 
    void crossover_and_mutate(float crossover_rate, float mutation_rate);
+   void crossover(float crossover_rate);
+   void mutate(float mutation_rate);
 
    void evolve(unsigned generations);
 
@@ -51,6 +58,7 @@ private:
 
 private:
    static std::function<population(population const &, std::size_t k)> selection_function;
+   static std::function<void(population &)> evolution_function;
    // Storage for all individuals in this population
    std::vector<individual> individuals;
 };

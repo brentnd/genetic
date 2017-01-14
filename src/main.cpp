@@ -42,6 +42,8 @@ int main( int argc, char * const * argv ) {
    }
 
    random::reset();
+   std::size_t tournament_size = 3;
+   genetic::population::selection_method(&genetic::population::select_tournament, tournament_size);
    genetic::population pop(population_size);
    pop.evolve(max_generations);
    std::printf("population evolved for %d generations\n", max_generations);
