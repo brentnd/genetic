@@ -4,7 +4,6 @@
 
 #include "../src/population.hpp"
 #include "../src/random.hpp"
-#include "../src/sequence.hpp"
 
 TEST_CASE( "Test for random", "[random]" ) {
    random::seed(1);
@@ -92,42 +91,37 @@ TEST_CASE( "Test for genetic::sequence", "[sequence]" ) {
    // Predictable random tests (that passed before)
    random::seed(1);
    SECTION ( "genes of two rand inits are different" ) {
-      genetic::sequence a, b;
+      genetic::organism a, b;
       // Two random individuals don't match
       REQUIRE_FALSE(a == b);
-      REQUIRE_FALSE(a.get_fitness() == b.get_fitness());
+      REQUIRE_FALSE(a.evaluate() == b.evaluate());
    }
 
    SECTION ( "mutations with different rates" ) {
       // Copy constructor
-      genetic::sequence a;
-      genetic::sequence a_dup = a;
+      genetic::organism a;
+      genetic::organism a_dup = a;
       REQUIRE(a_dup == a);
       // Mutate (0 = none)
       a.mutate(0.0);
       REQUIRE(a_dup == a);
-      REQUIRE(a_dup.get_fitness() == a.get_fitness());
+      REQUIRE(a_dup.evaluate() == a.evaluate());
       // Mutation > 0.0 should modify genes
       a.mutate(0.5);
       REQUIRE_FALSE(a_dup == a);
-      REQUIRE(a_dup.get_fitness() != a.get_fitness());
+      REQUIRE(a_dup.evaluate() != a.evaluate());
       // Mutation == 1.0 should modify again
       a.mutate(1.0);
       REQUIRE_FALSE(a_dup == a);
-      REQUIRE(a_dup.get_fitness() != a.get_fitness());
+      REQUIRE(a_dup.evaluate() != a.evaluate());
    }
 
    SECTION ( "breed results in differnet children" ) {
-      genetic::sequence a,b;
-      // New child doesn't exactly match either parent
-      genetic::sequence child = genetic::sequence::breed(a, b);
-      REQUIRE_FALSE(child == a);
-      REQUIRE_FALSE(child == b);
-
-      // Siblings shouldn't match
-      genetic::sequence sibling = genetic::sequence::breed(a, b);
-      REQUIRE_FALSE(sibling == child);
-      REQUIRE_FALSE(sibling == a);
+      genetic::organism a, b;
+      genetic::organism a_old = a, b_old = b;
+      genetic::organism::mate(&a, &b);
+      REQUIRE_FALSE(a == a_old);
+      REQUIRE_FALSE(b == b_old);
    }
 }
 
@@ -136,44 +130,24 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
    random::seed(1);
 
    SECTION ( "population size constant through evoluation, factor of 3" ) {
-      genetic::population<genetic::sequence> pop(99);
-      REQUIRE(pop.get_size() == 99);
-      pop.evolve(1, genetic::sequence::get_max_fitness(), 0.2, true);
-      REQUIRE(pop.get_size() == 99);
+      genetic::population pop(99);
+      REQUIRE(pop.size() == 99);
+      pop.evolve(1);
+      REQUIRE(pop.size() == 99);
    }
 
-   SECTION ( "population size constant through evoluation, non-factor of 3" ) {
-      genetic::population<genetic::sequence> pop_odd(101);
-      REQUIRE(pop_odd.get_size() == 101);
-      pop_odd.evolve(1, genetic::sequence::get_max_fitness(), 0.2, true);
-      REQUIRE(pop_odd.get_size() == 101);
-   }
-
-   SECTION ( "evoluation should improve fitness" ) {
-      genetic::population<genetic::sequence> pop(99);
+   SECTION ( "evaluation should improve fitness" ) {
+      genetic::population pop(99);
       auto pop_old = pop;
-      pop.evolve(1, genetic::sequence::get_max_fitness(), 0.2, true);
-      REQUIRE(pop.get_fittest().get_fitness() >= pop_old.get_fittest().get_fitness());
-      REQUIRE(pop.get_fitness() >= pop_old.get_fitness());
+      pop.evolve(1);
+      REQUIRE(pop.select_best(1)[0].evaluate() >= pop_old.select_best(1)[0].evaluate());
    }
 
    SECTION ( "20 evoluation cycles" ) {
-      genetic::population<genetic::sequence> pop(99);
+      genetic::population pop(99);
       auto pop_old = pop;
-      pop.evolve(20, genetic::sequence::get_max_fitness(), 0.1, true);
-      REQUIRE(pop.get_fittest().get_fitness() >= pop_old.get_fittest().get_fitness());
-      REQUIRE(pop.get_fitness() >= pop_old.get_fitness());
-      REQUIRE(pop.get_size() == pop_old.get_size());
-   }
-}
-
-TEST_CASE( "Test for previous results", "[results]" ) {
-   // Predictable random tests (that passed before)
-   random::seed(1);
-
-   SECTION ( "'easy' solution" ) {
-      genetic::sequence::set_solution("easy");
-      genetic::population<genetic::sequence> pop(99);
-      REQUIRE(pop.evolve(32, genetic::sequence::get_max_fitness(), 0.08, true));
+      pop.evolve(20);
+      REQUIRE(pop.select_best(1)[0].evaluate() >= pop_old.select_best(1)[0].evaluate());
+      REQUIRE(pop.size() == pop_old.size());
    }
 }

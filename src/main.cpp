@@ -4,7 +4,6 @@
 #include <iostream>
 
 #include "population.hpp"
-#include "sequence.hpp"
 #include "random.hpp"
 
 int main( int argc, char * const * argv ) {
@@ -42,15 +41,9 @@ int main( int argc, char * const * argv ) {
       }
    }
 
-   int max = genetic::sequence::get_max_fitness();
    random::reset();
-   genetic::population<genetic::sequence> pop(population_size);
-   bool success = pop.evolve(max_generations, max, mutation_rate, elitism);
-   if (success) {
-      std::printf ("successfully reached maximum fitness with solution:\n\t");
-   } else {
-      std::printf ("Evolved for %d generations and found:\n\t",max_generations);
-   }
-   std::cout << pop.get_fittest() << std::endl;
+   genetic::population pop(population_size);
+   pop.evolve(max_generations);
+   std::printf("population evolved for %d generations\n", max_generations);
    return 0;
 }
