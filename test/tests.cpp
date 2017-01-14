@@ -91,7 +91,7 @@ TEST_CASE( "Test for genetic::sequence", "[sequence]" ) {
    // Predictable random tests (that passed before)
    random::seed(1);
    SECTION ( "genes of two rand inits are different" ) {
-      genetic::organism a, b;
+      genetic::individual a, b;
       // Two random individuals don't match
       REQUIRE_FALSE(a == b);
       REQUIRE_FALSE(a.evaluate() == b.evaluate());
@@ -99,8 +99,8 @@ TEST_CASE( "Test for genetic::sequence", "[sequence]" ) {
 
    SECTION ( "mutations with different rates" ) {
       // Copy constructor
-      genetic::organism a;
-      genetic::organism a_dup = a;
+      genetic::individual a;
+      genetic::individual a_dup = a;
       REQUIRE(a_dup == a);
       // Mutate (0 = none)
       a.mutate(0.0);
@@ -117,9 +117,9 @@ TEST_CASE( "Test for genetic::sequence", "[sequence]" ) {
    }
 
    SECTION ( "breed results in differnet children" ) {
-      genetic::organism a, b;
-      genetic::organism a_old = a, b_old = b;
-      genetic::organism::mate(&a, &b);
+      genetic::individual a, b;
+      genetic::individual a_old = a, b_old = b;
+      genetic::individual::mate(&a, &b);
       REQUIRE_FALSE(a == a_old);
       REQUIRE_FALSE(b == b_old);
    }

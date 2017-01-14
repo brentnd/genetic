@@ -9,7 +9,7 @@ set(EXE genetic)
 set(TEXT_EXE test_${EXE})
 
 set(SOURCE_FILES
-   src/organism.cpp
+        src/individual.cpp
    src/population.cpp
    src/random.cpp)
 

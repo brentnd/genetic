@@ -6,7 +6,7 @@
 #include <vector>
 #include <cassert>
 
-#include "organism.hpp"
+#include "individual.hpp"
 #include "random.hpp"
 
 namespace genetic {
@@ -39,13 +39,13 @@ public:
    // Get the size of the population
    std::size_t size() const;
 
-   organism & operator[] (int i);
+   individual & operator[] (int i);
 private:
    void print_stats(unsigned generation=0) const;
 
 private:
    // Storage for all individuals in this population
-   std::vector<organism> organisms;
+   std::vector<individual> individuals;
 };
 
 } // namespace genetic

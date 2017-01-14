@@ -1,22 +1,22 @@
-#include "organism.hpp"
+#include "individual.hpp"
 #include <numeric>
 
 namespace genetic {
 
-/*static*/ std::function<int(organism const &)> organism::evaluation_function = [] (organism const & ind) -> int {
+/*static*/ std::function<int(individual const &)> individual::evaluation_function = [] (individual const & ind) -> int {
    return std::accumulate(ind.attributes.begin(), ind.attributes.end(), 0, [](int current_sum, attribute const & attr) {
       return current_sum + attr.value;
    });
 };
-/*static*/ std::size_t organism::attribute_count = 100;
+/*static*/ std::size_t individual::attribute_count = 100;
 
-organism::organism() :
+individual::individual() :
       fitness(0),
       valid_fitness(false),
       attributes(attribute_count) {
 }
 
-/*static*/ void organism::mate(organism * ind1, organism * ind2) {
+/*static*/ void individual::mate(individual * ind1, individual * ind2) {
    std::size_t size, point1, point2;
    size = std::min(ind1->size(), ind2->size());
    point1 = random::randint(1, size);
@@ -33,11 +33,11 @@ organism::organism() :
    ind2->valid_fitness = false;
 }
 
-/*static*/ void organism::set_evaluation_function(std::function<int(organism const &)> && fcn) {
+/*static*/ void individual::set_evaluation_function(std::function<int(individual const &)> && fcn) {
    evaluation_function = std::move(fcn);
 }
 
-void organism::mutate(float mutation_rate) {
+void individual::mutate(float mutation_rate) {
    for (auto & attr : *this) {
       if (random::probability(mutation_rate)) {
          attr = attribute();
@@ -46,9 +46,9 @@ void organism::mutate(float mutation_rate) {
    valid_fitness = false;
 }
 
-int organism::evaluate() {
+int individual::evaluate() {
    if (!evaluation_function) {
-      throw std::runtime_error("organism has no evaluation function");
+      throw std::runtime_error("individual has no evaluation function");
    }
    if (!valid_fitness) {
       fitness = evaluation_function(*this);
@@ -57,36 +57,36 @@ int organism::evaluate() {
    return fitness;
 }
 
-bool organism::operator<(organism const & other) const {
+bool individual::operator<(individual const & other) const {
    if (!valid_fitness || !other.valid_fitness) {
-      std::runtime_error("attempting to compare organisms with invalid fitness");
+      std::runtime_error("attempting to compare individuals with invalid fitness");
    }
    return fitness < other.fitness;
 }
 
-bool organism::operator>(organism const & other) const {
+bool individual::operator>(individual const & other) const {
    if (!valid_fitness || !other.valid_fitness) {
-      std::runtime_error("attempting to compare organisms with invalid fitness");
+      std::runtime_error("attempting to compare individuals with invalid fitness");
    }
    return fitness > other.fitness;
 }
 
-bool organism::operator==(organism const & other) const {
+bool individual::operator==(individual const & other) const {
    if (!valid_fitness || !other.valid_fitness) {
-      std::runtime_error("attempting to compare organisms with invalid fitness");
+      std::runtime_error("attempting to compare individuals with invalid fitness");
    }
    return attributes == other.attributes;
 }
 
-std::vector<attribute>::iterator organism::begin() {
+std::vector<attribute>::iterator individual::begin() {
    return attributes.begin();
 }
 
-std::vector<attribute>::iterator organism::end() {
+std::vector<attribute>::iterator individual::end() {
    return attributes.end();
 }
 
-std::size_t organism::size() const {
+std::size_t individual::size() const {
    return attributes.size();
 }
 

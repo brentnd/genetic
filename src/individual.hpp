@@ -1,5 +1,5 @@
-#ifndef GENETIC_ORGANISM_HPP
-#define GENETIC_ORGANISM_HPP
+#ifndef GENETIC_INDIVIDUAL_HPP
+#define GENETIC_INDIVIDUAL_HPP
 
 #include <algorithm> // std::min, std::swap_ranges
 #include <functional> // std::function
@@ -12,25 +12,25 @@
 
 namespace genetic {
 
-class organism {
+class individual {
 public:
-   organism();
+   individual();
 
    // Both modified in place (two-point crossover)
-   static void mate(organism * ind1, organism * ind2);
+   static void mate(individual * ind1, individual * ind2);
 
-   static void set_evaluation_function(std::function<int(organism const &)> && fcn);
+   static void set_evaluation_function(std::function<int(individual const &)> && fcn);
 
    // Mutate in-place by with random attributes
    void mutate(float mutation_rate);
 
    int evaluate();
 
-   bool operator<(organism const & other) const;
+   bool operator<(individual const & other) const;
 
-   bool operator>(organism const & other) const;
+   bool operator>(individual const & other) const;
 
-   bool operator==(organism const & other) const;
+   bool operator==(individual const & other) const;
 
    std::vector<attribute>::iterator begin();
 
@@ -38,13 +38,13 @@ public:
 
    std::size_t size() const;
 
-   friend std::ostream& operator<<(std::ostream & stream, const organism & ind) {
+   friend std::ostream& operator<<(std::ostream & stream, const individual & ind) {
       stream << "individual @ (" << static_cast<const void *>(&ind) << ") f=" << ind.fitness;
       return stream;
    }
 
 private:
-   static std::function<int(organism const &)> evaluation_function;
+   static std::function<int(individual const &)> evaluation_function;
    static std::size_t attribute_count;
 
    int fitness;
@@ -54,4 +54,4 @@ private:
 
 }
 
-#endif //GENETIC_ORGANISM_HPP
+#endif //GENETIC_INDIVIDUAL_HPP
