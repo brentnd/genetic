@@ -1,4 +1,4 @@
-#include "random.hpp"
+#include <geneticpp/random.hpp>
 
 #include <algorithm>
 

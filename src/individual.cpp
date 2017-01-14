@@ -1,4 +1,4 @@
-#include "individual.hpp"
+#include <geneticpp/individual.hpp>
 #include <numeric>
 
 namespace genetic {

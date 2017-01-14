@@ -3,8 +3,7 @@
 #include <getopt.h>
 #include <iostream>
 
-#include "population.hpp"
-#include "random.hpp"
+#include <geneticpp.hpp>
 
 int main( int argc, char * const * argv ) {
    // Parameter defaults

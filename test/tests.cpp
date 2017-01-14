@@ -2,8 +2,8 @@
 
 #include <algorithm>
 
-#include "../src/population.hpp"
-#include "../src/random.hpp"
+#include "../include/geneticpp/population.hpp"
+#include "../include/geneticpp/random.hpp"
 
 TEST_CASE( "Test for random", "[random]" ) {
    random::seed(1);

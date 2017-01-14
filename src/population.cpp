@@ -1,4 +1,4 @@
-#include "population.hpp"
+#include <geneticpp/population.hpp>
 
 namespace genetic {
 
