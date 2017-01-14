@@ -55,10 +55,23 @@ public:
 
    bool operator==(individual const & other) const;
 
+   std::vector<attribute>::iterator begin();
+   std::vector<attribute>::iterator end();
+   attribute const & at(std::size_t pos) const;
    std::size_t size() const;
 
    friend std::ostream& operator<<(std::ostream & stream, const individual & ind) {
-      stream << "individual @ (" << static_cast<const void *>(&ind) << ") f=" << ind.fitness;
+      stream << "individual @ (" << static_cast<const void *>(&ind) << ") f=" << ind.fitness << " attributes=[";
+      for (auto const & attr : ind.attributes) {
+         char val = attr;
+         if (val > ' ' && val < '~') {
+            stream << static_cast<char>(attr);
+         } else {
+            stream << attr.value;
+         }
+         stream << ", ";
+      }
+      stream << "]";
       return stream;
    }
 

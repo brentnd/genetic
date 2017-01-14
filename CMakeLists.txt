@@ -15,7 +15,7 @@ set(SOURCE_FILES
 add_library(geneticpp SHARED ${SOURCE_FILES})
 
 add_executable(geneticpp-example
-    example/main.cpp
+        example/hello_world.cpp
 )
 target_link_libraries(geneticpp-example geneticpp)
 add_executable(geneticpp-test

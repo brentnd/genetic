@@ -14,7 +14,7 @@ struct attribute {
 
    void seed() {
       // TODO: attribute seeding function
-      randomize(0, 100);
+      randomize('!', 'z');
    }
 
    void randomize(int min, int max) {
@@ -31,6 +31,13 @@ struct attribute {
 
    int operator+(attribute const & other) const {
       return value + other.value;
+   }
+
+   operator int() const {
+      return value;
+   }
+   operator char() const {
+      return static_cast<char>(value);
    }
 };
 

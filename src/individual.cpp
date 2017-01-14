@@ -17,6 +17,8 @@ individual::individual() :
 
 /*static*/ void individual::mate(individual * ind1, individual * ind2) {
    mating_function(ind1, ind2);
+   ind1->valid_fitness = false;
+   ind2->valid_fitness = false;
 }
 
 /*static*/ void individual::one_point_crossover(individual * ind1, individual * ind2) {
@@ -25,9 +27,6 @@ individual::individual() :
    point = random::randint(1, size - 1);
    // Swap point1: between individual 1 and 2
    std::swap_ranges(ind1->attributes.begin() + point, ind1->attributes.end(), ind2->attributes.begin() + point);
-
-   ind1->valid_fitness = false;
-   ind2->valid_fitness = false;
 }
 
 /*static*/ void individual::two_point_crossover(individual * ind1, individual * ind2) {
@@ -42,9 +41,6 @@ individual::individual() :
    }
    // Swap point1:point2 between individual 1 and 2
    std::swap_ranges(ind1->attributes.begin() + point1, ind1->attributes.begin() + point2, ind2->attributes.begin() + point1);
-
-   ind1->valid_fitness = false;
-   ind2->valid_fitness = false;
 }
 
 /*static*/ void individual::evaluation_method(std::function<int(individual const &)> && fcn) {
@@ -55,10 +51,12 @@ void individual::seed() {
    for (auto & attr : attributes) {
       attr.seed();
    }
+   valid_fitness = false;
 }
 
 void individual::mutate() {
    mutation_function(*this);
+   valid_fitness = false;
 }
 
 void individual::uniform_int(float mutation_rate, int min, int max) {
@@ -67,7 +65,6 @@ void individual::uniform_int(float mutation_rate, int min, int max) {
          attr.randomize(min, max);
       }
    }
-   valid_fitness = false;
 }
 
 void individual::flip_bit(float mutation_rate) {
@@ -76,7 +73,6 @@ void individual::flip_bit(float mutation_rate) {
          attr.flip();
       }
    }
-   valid_fitness = false;
 }
 
 void individual::shuffle_indexes(float mutation_rate) {
@@ -90,7 +86,6 @@ void individual::shuffle_indexes(float mutation_rate) {
          std::swap(attributes.at(i), attributes.at(swap_index));
       }
    }
-   valid_fitness = false;
 }
 
 int individual::evaluate() {
@@ -120,6 +115,18 @@ bool individual::operator>(individual const & other) const {
 bool individual::operator==(individual const & other) const {
    throw_if_fitness_invalid(); other.throw_if_fitness_invalid();
    return attributes == other.attributes;
+}
+
+std::vector<attribute>::iterator individual::begin() {
+   return attributes.begin();
+}
+
+attribute const & individual::at(std::size_t pos) const {
+   return attributes.at(pos);
+}
+
+std::vector<attribute>::iterator individual::end() {
+   return attributes.end();
 }
 
 std::size_t individual::size() const {
