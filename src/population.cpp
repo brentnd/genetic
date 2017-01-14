@@ -12,11 +12,6 @@ population::population(population const & pop) :
       individuals(pop.individuals) {
 }
 
-
-/*static*/ void population::selection_method(population (population::* fcn)(std::size_t) const) {
-   selection_function = fcn;
-}
-
 population population::select_random(std::size_t k) const {
    auto selected(random::sample(0, size() - 1, k, false /* not unique */));
    population random_individuals(k);
@@ -45,8 +40,9 @@ population population::select_worst(std::size_t k) const {
 
 population population::select_tournament(std::size_t k, std::size_t tournament_size) const {
    population tournament_champions(0);
-   while (k-- > 0) {
+   for (unsigned i=0; i < k; ++i) {
       auto aspirants(select_random(tournament_size));
+      aspirants.evaluate();
       tournament_champions.individuals.push_back(
             std::move(*std::max_element(aspirants.individuals.begin(), aspirants.individuals.end())));
    }

@@ -18,7 +18,10 @@ public:
 
    population(population const & pop);
 
-   static void selection_method(population (population::* fcn)(std::size_t) const);
+   template <typename... Args>
+   static void selection_method(population (population::* fcn)(std::size_t, Args...) const, Args... args) {
+      selection_function = std::bind(fcn, std::placeholders::_1, std::placeholders::_2, std::forward<Args>(args)...);
+   }
 
    // Generate an entirely new population by random selection
    population select_random(std::size_t k) const;
