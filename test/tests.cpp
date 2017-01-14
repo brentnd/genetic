@@ -121,7 +121,7 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE(a_dup.evaluate() != a.evaluate());
    }
 
-   SECTION ( "breed results in different children" ) {
+   SECTION ( "mating results in different children" ) {
       genetic::individual a, b;
       a.evaluate(); b.evaluate();
       genetic::individual a_old = a, b_old = b;
@@ -129,6 +129,26 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       a.evaluate(); b.evaluate();
       REQUIRE_FALSE(a == a_old);
       REQUIRE_FALSE(b == b_old);
+   }
+
+   SECTION ( "custom mating function can be set" ) {
+      genetic::individual::mating_method(&genetic::individual::one_point_crossover);
+      genetic::individual a, b;
+      a.evaluate(); b.evaluate();
+      genetic::individual a_old = a, b_old = b;
+      genetic::individual::mate(&a, &b);
+      a.evaluate(); b.evaluate();
+      REQUIRE_FALSE(a == a_old);
+      REQUIRE_FALSE(b == b_old);
+   }
+
+   SECTION ( "custom evaluation function can be set" ) {
+      genetic::individual::mating_method(&genetic::individual::one_point_crossover);
+      genetic::individual::evaluation_method([] (genetic::individual const & ind) -> int {
+         return 42;
+      });
+      genetic::individual a;
+      REQUIRE(a.evaluate() == 42);
    }
 
    SECTION ( "fitness evaluation" ) {

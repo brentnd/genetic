@@ -8,6 +8,7 @@ namespace genetic {
       return current_sum + attr.value;
    });
 };
+/*static*/ std::function<void(individual *, individual *)> individual::mating_function = &individual::two_point_crossover;
 /*static*/ std::size_t individual::attribute_count = 100;
 
 individual::individual() :
@@ -17,6 +18,21 @@ individual::individual() :
 }
 
 /*static*/ void individual::mate(individual * ind1, individual * ind2) {
+   mating_function(ind1, ind2);
+}
+
+/*static*/ void individual::one_point_crossover(individual * ind1, individual * ind2) {
+   std::size_t size, point;
+   size = std::min(ind1->size(), ind2->size());
+   point = random::randint(1, size - 1);
+   // Swap point1: between individual 1 and 2
+   std::swap_ranges(ind1->begin() + point, ind1->end(), ind2->begin() + point);
+
+   ind1->valid_fitness = false;
+   ind2->valid_fitness = false;
+}
+
+/*static*/ void individual::two_point_crossover(individual * ind1, individual * ind2) {
    std::size_t size, point1, point2;
    size = std::min(ind1->size(), ind2->size());
    point1 = random::randint(1, size);
@@ -33,7 +49,7 @@ individual::individual() :
    ind2->valid_fitness = false;
 }
 
-/*static*/ void individual::set_evaluation_function(std::function<int(individual const &)> && fcn) {
+/*static*/ void individual::evaluation_method(std::function<int(individual const &)> && fcn) {
    evaluation_function = std::move(fcn);
 }
 

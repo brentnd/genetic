@@ -19,7 +19,14 @@ public:
    // Both modified in place (two-point crossover)
    static void mate(individual * ind1, individual * ind2);
 
-   static void set_evaluation_function(std::function<int(individual const &)> && fcn);
+   static void one_point_crossover(individual * ind1, individual * ind2);
+   static void two_point_crossover(individual * ind1, individual * ind2);
+
+   static void evaluation_method(std::function<int(individual const &)> && fcn);
+   template <typename... Args>
+   static void mating_method(void (*fcn)(individual *, individual *, Args...), Args... args) {
+      mating_function = std::bind(fcn, std::placeholders::_1, std::placeholders::_2, std::forward<Args>(args)...);
+   }
 
    // Mutate in-place by with random attributes
    void mutate(float mutation_rate);
@@ -45,6 +52,7 @@ public:
 
 private:
    static std::function<int(individual const &)> evaluation_function;
+   static std::function<void(individual *, individual *)> mating_function;
    static std::size_t attribute_count;
    void throw_if_fitness_invalid() const;
 
