@@ -2,9 +2,10 @@
 #define GENETIC_POPULATION_HPP
 
 #include <algorithm>
-#include <cstdlib>
-#include <vector>
 #include <cassert>
+#include <cstdlib>
+#include <functional>
+#include <vector>
 
 #include "individual.hpp"
 #include "random.hpp"
@@ -16,6 +17,8 @@ public:
    population(std::size_t size_);
 
    population(population const & pop);
+
+   static void selection_method(population (population::* fcn)(std::size_t) const);
 
    // Generate an entirely new population by random selection
    population select_random(std::size_t k) const;
@@ -44,6 +47,7 @@ private:
    void print_stats(unsigned generation=0) const;
 
 private:
+   static std::function<population(population const &, std::size_t k)> selection_function;
    // Storage for all individuals in this population
    std::vector<individual> individuals;
 };

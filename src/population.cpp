@@ -2,12 +2,19 @@
 
 namespace genetic {
 
+/*static*/ std::function<population(population const &, std::size_t k)> population::selection_function = &population::select_best;
+
 population::population(std::size_t size_) :
       individuals(size_) {
 }
 
 population::population(population const & pop) :
       individuals(pop.individuals) {
+}
+
+
+/*static*/ void population::selection_method(population (population::* fcn)(std::size_t) const) {
+   selection_function = fcn;
 }
 
 population population::select_random(std::size_t k) const {
@@ -65,8 +72,7 @@ void population::evolve(unsigned generations) {
    for (unsigned gen=0; gen < generations; gen++) {
       evaluate();
       print_stats(gen);
-      // TODO: how to vary select type?
-      auto offspring(select_best(size()));
+      auto offspring(selection_function(*this, size()));
       offspring.crossover_and_mutate(0.2 /* TODO: crossover rate */, 0.08 /* TODO: mutation rate */);
       offspring.evaluate();
       individuals = offspring.individuals;

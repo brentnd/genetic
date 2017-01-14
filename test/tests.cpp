@@ -177,6 +177,15 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
       REQUIRE(pop.select_best(1)[0].evaluate() >= pop_old.select_best(1)[0].evaluate());
    }
 
+   SECTION ( "evaluation with select_worst might improve fitness" ) {
+      genetic::population::selection_method(&genetic::population::select_worst);
+      genetic::population pop(99);
+      pop.evaluate();
+      auto pop_old = pop;
+      pop.evolve(1);
+      REQUIRE(pop.select_best(1)[0].evaluate() == pop_old.select_best(1)[0].evaluate());
+   }
+
    SECTION ( "20 evoluation cycles" ) {
       genetic::population pop(99);
       pop.evaluate();
