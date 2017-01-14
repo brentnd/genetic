@@ -11,7 +11,9 @@ int main( int argc, char * const * argv ) {
    bool elitism = false;
    unsigned max_generations = 500;
    unsigned population_size = 999;
-   double mutation_rate = 0.1;
+   float mutation_rate = 0.1;
+   float crossover_rate = 0.5;
+   std::size_t tournament_size = 3;
 
    ::opterr = 0;
    char c;
@@ -42,8 +44,8 @@ int main( int argc, char * const * argv ) {
    }
 
    random::reset();
-   std::size_t tournament_size = 3;
    genetic::population::selection_method(&genetic::population::select_tournament, tournament_size);
+   genetic::population::evolution_method(&genetic::population::crossover_and_mutate, crossover_rate, mutation_rate);
    genetic::population pop(population_size);
    pop.evolve(max_generations);
    std::printf("population evolved for %d generations\n", max_generations);
