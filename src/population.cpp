@@ -63,6 +63,7 @@ void population::crossover_and_mutate(float crossover_rate, float mutation_rate)
 
 void population::evolve(unsigned generations) {
    for (unsigned gen=0; gen < generations; gen++) {
+      evaluate();
       print_stats(gen);
       // TODO: how to vary select type?
       auto offspring(select_best(size()));
@@ -70,6 +71,7 @@ void population::evolve(unsigned generations) {
       offspring.evaluate();
       individuals = offspring.individuals;
    }
+   evaluate();
 }
 
 void population::evaluate() {

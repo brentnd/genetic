@@ -87,11 +87,12 @@ TEST_CASE( "Test for random", "[random]" ) {
    }
 }
 
-TEST_CASE( "Test for genetic::sequence", "[sequence]" ) {
+TEST_CASE( "Test for genetic::individual", "[individual]" ) {
    // Predictable random tests (that passed before)
    random::seed(1);
    SECTION ( "genes of two rand inits are different" ) {
       genetic::individual a, b;
+      a.evaluate(); b.evaluate();
       // Two random individuals don't match
       REQUIRE_FALSE(a == b);
       REQUIRE_FALSE(a.evaluate() == b.evaluate());
@@ -100,28 +101,60 @@ TEST_CASE( "Test for genetic::sequence", "[sequence]" ) {
    SECTION ( "mutations with different rates" ) {
       // Copy constructor
       genetic::individual a;
+      a.evaluate();
       genetic::individual a_dup = a;
       REQUIRE(a_dup == a);
       // Mutate (0 = none)
       a.mutate(0.0);
+      a.evaluate();
       REQUIRE(a_dup == a);
       REQUIRE(a_dup.evaluate() == a.evaluate());
       // Mutation > 0.0 should modify genes
       a.mutate(0.5);
+      a.evaluate();
       REQUIRE_FALSE(a_dup == a);
       REQUIRE(a_dup.evaluate() != a.evaluate());
       // Mutation == 1.0 should modify again
       a.mutate(1.0);
+      a.evaluate();
       REQUIRE_FALSE(a_dup == a);
       REQUIRE(a_dup.evaluate() != a.evaluate());
    }
 
-   SECTION ( "breed results in differnet children" ) {
+   SECTION ( "breed results in different children" ) {
       genetic::individual a, b;
+      a.evaluate(); b.evaluate();
       genetic::individual a_old = a, b_old = b;
       genetic::individual::mate(&a, &b);
+      a.evaluate(); b.evaluate();
       REQUIRE_FALSE(a == a_old);
       REQUIRE_FALSE(b == b_old);
+   }
+
+   SECTION ( "fitness evaluation" ) {
+      // Both invalid
+      genetic::individual a, b;
+      REQUIRE_THROWS(a == b);
+      REQUIRE_THROWS(a > b);
+      REQUIRE_THROWS(a < b);
+
+      // B invalid
+      a.evaluate();
+      REQUIRE_THROWS(a == b);
+      REQUIRE_THROWS(a > b);
+      REQUIRE_THROWS(a < b);
+
+      // A mutation caused invalid, but B valid
+      a.mutate(0.5);
+      b.evaluate();
+      REQUIRE_THROWS(a == b);
+      REQUIRE_THROWS(a > b);
+      REQUIRE_THROWS(a < b);
+
+      a.evaluate();
+      REQUIRE_NOTHROW(a == b);
+      REQUIRE_NOTHROW(a > b);
+      REQUIRE_NOTHROW(a < b);
    }
 }
 
@@ -138,6 +171,7 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
 
    SECTION ( "evaluation should improve fitness" ) {
       genetic::population pop(99);
+      pop.evaluate();
       auto pop_old = pop;
       pop.evolve(1);
       REQUIRE(pop.select_best(1)[0].evaluate() >= pop_old.select_best(1)[0].evaluate());
@@ -145,6 +179,7 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
 
    SECTION ( "20 evoluation cycles" ) {
       genetic::population pop(99);
+      pop.evaluate();
       auto pop_old = pop;
       pop.evolve(20);
       REQUIRE(pop.select_best(1)[0].evaluate() >= pop_old.select_best(1)[0].evaluate());

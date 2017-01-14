@@ -58,23 +58,17 @@ int individual::evaluate() {
 }
 
 bool individual::operator<(individual const & other) const {
-   if (!valid_fitness || !other.valid_fitness) {
-      std::runtime_error("attempting to compare individuals with invalid fitness");
-   }
+   throw_if_fitness_invalid(); other.throw_if_fitness_invalid();
    return fitness < other.fitness;
 }
 
 bool individual::operator>(individual const & other) const {
-   if (!valid_fitness || !other.valid_fitness) {
-      std::runtime_error("attempting to compare individuals with invalid fitness");
-   }
+   throw_if_fitness_invalid(); other.throw_if_fitness_invalid();
    return fitness > other.fitness;
 }
 
 bool individual::operator==(individual const & other) const {
-   if (!valid_fitness || !other.valid_fitness) {
-      std::runtime_error("attempting to compare individuals with invalid fitness");
-   }
+   throw_if_fitness_invalid(); other.throw_if_fitness_invalid();
    return attributes == other.attributes;
 }
 
@@ -88,6 +82,12 @@ std::vector<attribute>::iterator individual::end() {
 
 std::size_t individual::size() const {
    return attributes.size();
+}
+
+void individual::throw_if_fitness_invalid() const {
+   if (!valid_fitness) {
+      throw std::runtime_error("attempting to compare individuals with invalid fitness");
+   }
 }
 
 } // namespace genetic

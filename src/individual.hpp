@@ -46,7 +46,9 @@ public:
 private:
    static std::function<int(individual const &)> evaluation_function;
    static std::size_t attribute_count;
+   void throw_if_fitness_invalid() const;
 
+private:
    int fitness;
    bool valid_fitness;
    std::vector<attribute> attributes;
