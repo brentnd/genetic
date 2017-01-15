@@ -44,9 +44,8 @@ population population::select_worst(std::size_t k) const {
 
 population population::select_tournament(std::size_t k, std::size_t tournament_size) const {
    population tournament_champions(0);
-   for (unsigned i=0; i < k; ++i) {
+   for (unsigned i=0; i < k; i++) {
       auto aspirants(select_random(tournament_size));
-      aspirants.evaluate();
       tournament_champions.individuals.push_back(
             std::move(*std::max_element(aspirants.individuals.begin(), aspirants.individuals.end())));
    }
@@ -76,15 +75,14 @@ void population::mutate(float mutation_rate) {
 }
 
 void population::evolve(unsigned generations) {
+   evaluate();
    for (unsigned gen=0; gen < generations; gen++) {
-      evaluate();
       print_stats(gen);
       auto offspring(selection_function(*this, size()));
       evolution_function(offspring);
-      offspring.evaluate();
-      individuals = offspring.individuals;
+      individuals = std::move(offspring.individuals);
+      evaluate();
    }
-   evaluate();
 }
 
 void population::evaluate() {
