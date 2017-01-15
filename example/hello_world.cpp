@@ -1,18 +1,17 @@
 #include <stdio.h>
 #include <cstdlib>
-#include <getopt.h>
 #include <iostream>
 
 #include <geneticpp.hpp>
 
 int main( int argc, char * const * argv ) {
-   random::reset();
+   random::seed();
 
    // Population configuration
    std::size_t tournament_size = 3;
    float crossover_rate = 0.5;
    float ind_mutation_rate = 0.1;
-   genetic::population::selection_method(&genetic::population::select_best);
+   genetic::population::selection_method(&genetic::population::select_tournament, tournament_size);
    genetic::population::evolution_method(&genetic::population::crossover_and_mutate, crossover_rate, ind_mutation_rate);
 
    // Individual configuration
@@ -29,7 +28,7 @@ int main( int argc, char * const * argv ) {
          char correct = solution[i];
          char attr = ind.at(i);
          if (attr == correct) {
-            fitness += 50;
+            fitness += 100;
          } else {
             fitness -= std::abs(correct - attr);
          }
@@ -37,8 +36,8 @@ int main( int argc, char * const * argv ) {
       return fitness;
    });
 
-   unsigned generations = 200;
-   std::size_t population_size = 5000;
+   unsigned generations = 40;
+   std::size_t population_size = 500;
    genetic::population pop(population_size);
    pop.evolve(generations);
    std::printf("population evolved for %d generations\n", generations);

@@ -14,7 +14,7 @@ struct attribute {
 
    void seed() {
       // TODO: attribute seeding function
-      randomize('!', 'z');
+      randomize(' ', 'z');
    }
 
    void randomize(int min, int max) {

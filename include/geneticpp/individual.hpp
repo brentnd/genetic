@@ -60,6 +60,19 @@ public:
    attribute const & at(std::size_t pos) const;
    std::size_t size() const;
 
+   std::string to_string() const {
+      std::string sol;
+      for (auto const & attr : attributes) {
+         char val = attr;
+         if (val > ' ' && val < '~') {
+            sol += static_cast<char>(attr);
+         } else {
+            sol += '?';
+         }
+      }
+      return std::move(sol);
+   }
+
    friend std::ostream& operator<<(std::ostream & stream, const individual & ind) {
       stream << "individual @ (" << static_cast<const void *>(&ind) << ") f=" << ind.fitness << " attributes=[";
       for (auto const & attr : ind.attributes) {
