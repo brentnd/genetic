@@ -1,9 +1,6 @@
 #ifndef RANDOM_HPP
 #define RANDOM_HPP
 
-#include <ctime>
-#include <random>
-#include <stdexcept>
 #include <vector>
 
 class random {

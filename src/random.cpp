@@ -1,11 +1,14 @@
 #include <geneticpp/random.hpp>
 
 #include <algorithm>
+#include <ctime>
+#include <cstdlib>
+#include <stdexcept>
 
 /*static*/ unsigned random::seed_value = 0;
 
 void random::seed() {
-   seed( static_cast<unsigned>(std::time(0)) );
+   seed(static_cast<unsigned>(std::time(0)));
 }
 
 void random::seed(unsigned seed) {
