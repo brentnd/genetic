@@ -19,11 +19,10 @@ population::population(population const & pop) :
 
 population population::select_random(std::size_t k) const {
    auto selected(random::sample(0, size() - 1, k, false /* not unique */));
-   population random_individuals(k);
-   unsigned i=0;
+   population random_individuals(0);
    for (auto const & index : selected) {
       // Copy from this population to the new one
-      random_individuals.individuals[i] = individuals[k];
+      random_individuals.individuals.push_back(individuals[index]);
    }
    return std::move(random_individuals);
 }
