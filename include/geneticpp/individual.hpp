@@ -76,11 +76,11 @@ public:
    friend std::ostream& operator<<(std::ostream & stream, const individual & ind) {
       stream << "individual @ (" << static_cast<const void *>(&ind) << ") f=" << ind.fitness << " attributes=[";
       for (auto const & attr : ind.attributes) {
-         char val = attr;
-         if (val > ' ' && val < '~') {
-            stream << static_cast<char>(attr);
+         auto val = static_cast<char>(attr);
+         if (val >= ' ' && val <= '~') {
+            stream << val;
          } else {
-            stream << attr.value;
+            stream << static_cast<int>(val);
          }
          stream << ", ";
       }
@@ -103,6 +103,6 @@ private:
    std::vector<attribute> attributes;
 };
 
-}
+} // namespace genetic
 
 #endif //GENETIC_INDIVIDUAL_HPP

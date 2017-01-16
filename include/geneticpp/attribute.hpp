@@ -5,42 +5,20 @@
 
 namespace genetic {
 
-struct attribute {
+class attribute {
+public:
+   attribute();
+   void seed();
+   void randomize(int min, int max);
+   void flip();
+   bool operator==(attribute const & other) const;
+   int operator+(attribute const & other) const;
+   operator int() const;
+   operator char() const;
+private:
    int value;
-
-   attribute() :
-         value(0) {
-   }
-
-   void seed() {
-      // TODO: attribute seeding function
-      randomize(' ', 'z');
-   }
-
-   void randomize(int min, int max) {
-      value = random::randint(min, max);
-   }
-
-   void flip() {
-      value = !value;
-   }
-
-   bool operator==(attribute const & other) const {
-      return value == other.value;
-   }
-
-   int operator+(attribute const & other) const {
-      return value + other.value;
-   }
-
-   operator int() const {
-      return value;
-   }
-   operator char() const {
-      return static_cast<char>(value);
-   }
 };
 
-}
+} // namespace genetic
 
 #endif //GENETIC_ATTRIBUTE_HPP
