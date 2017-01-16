@@ -41,6 +41,7 @@ public:
    population select_tournament(std::size_t k, std::size_t tournament_size) const;
 
    void crossover_and_mutate(float crossover_rate, float mutation_rate);
+   void crossover_or_mutate(std::size_t lambda, float crossover_rate, float mutation_rate);
    void crossover(float crossover_rate);
    void mutate(float mutation_rate);
 

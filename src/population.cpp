@@ -58,6 +58,29 @@ void population::crossover_and_mutate(float crossover_rate, float mutation_rate)
    mutate(mutation_rate);
 }
 
+void population::crossover_or_mutate(std::size_t lambda, float crossover_rate, float mutation_rate) {
+   if (crossover_rate + mutation_rate > 1.0) {
+      throw std::logic_error("The sum of the crossover and mutation probabilities must be smaller or equal to 1.0");
+   }
+   population offspring(0);
+   offspring.individuals.reserve(lambda);
+   for (unsigned i=0; i < lambda; i++) {
+      float op_choice = random::uniform(0, 1);
+      if (op_choice < crossover_rate) {
+         auto mate_pop(select_random(2));
+         individual::mate(&mate_pop.individuals[0], &mate_pop.individuals[1]);
+         offspring.individuals.push_back(std::move(mate_pop.individuals[0]));
+      } else if (op_choice < (crossover_rate + mutation_rate)) {
+         auto mut_pop(select_random(1));
+         mut_pop[0].mutate();
+         offspring.individuals.push_back(std::move(mut_pop.individuals[0]));
+      } else {
+         auto repro(select_random(1));
+         offspring.individuals.push_back(std::move(repro.individuals[0]));
+      }
+   }
+}
+
 void population::crossover(float crossover_rate) {
    for (unsigned i=1; i < size(); i += 2) {
       if (random::probability(crossover_rate)) {
