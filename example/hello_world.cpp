@@ -23,9 +23,6 @@ int main( int argc, char * const * argv ) {
    genetic::individual::mutation_method(&genetic::individual::uniform_int, attr_mutation_rate,
                                         static_cast<double>(min_attr), static_cast<double>(max_attr));
    genetic::individual::attribute_count = sizeof solution - 1;
-   genetic::attribute::seed_method([min_attr, max_attr] () -> double {
-      return random::randint(min_attr, max_attr);
-   });
    genetic::individual::evaluation_method([solution] (genetic::individual const & ind) -> int {
       int fitness = 0;
       for (unsigned i=0; i < sizeof solution - 1; i++) {
@@ -39,6 +36,14 @@ int main( int argc, char * const * argv ) {
       }
       return fitness;
    });
+   genetic::attribute::seed_method([min_attr, max_attr] () -> double {
+      return random::randint(min_attr, max_attr);
+   });
+   genetic::attribute::display_method([] (std::ostream & stream, genetic::attribute const & attr) -> std::ostream & {
+      stream << static_cast<char>(attr);
+      return stream;
+   });
+   genetic::attribute::display_delimiter = "" /* empty string */;
 
    unsigned generations = 40;
    std::size_t population_size = 500;

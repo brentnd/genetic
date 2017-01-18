@@ -6,8 +6,20 @@ namespace genetic {
    return random::uniform(0.0, 100.0);
 };
 
+/*static*/ std::function<std::ostream &(std::ostream & stream, attribute const & attr)> attribute::display_function =
+      [] (std::ostream & stream, attribute const & attr) -> std::ostream & {
+         stream << attr.value;
+         return stream;
+      };
+
+/*static*/ std::string attribute::display_delimiter = ", ";
+
 /*static*/ void attribute::seed_method(std::function<double()> && fcn) {
    seed_function = std::move(fcn);
+}
+
+/*static*/ void attribute::display_method(std::function<std::ostream &(std::ostream &, attribute const &)> && fcn){
+   display_function = std::move(fcn);
 }
 
 attribute::attribute() :

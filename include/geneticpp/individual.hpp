@@ -75,9 +75,14 @@ public:
       return std::move(sol);
    }
 
-   friend std::ostream& operator<<(std::ostream & stream, const individual & ind) {
-      // TODO: attribute visitor?
+   friend std::ostream& operator<<(std::ostream & stream, individual const & ind) {
       stream << "individual @ (" << static_cast<const void *>(&ind) << ") f=" << ind.fitness;
+
+      stream << " attr=[";
+      for (auto const & attr : ind.attributes) {
+         stream << attr << attribute::display_delimiter;
+      }
+      stream << "]";
       return stream;
    }
 
