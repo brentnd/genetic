@@ -38,6 +38,13 @@ public:
     * TODO: support (b <= N <= a for b < a).
     */
    static float uniform(float a, float b);
+
+   /*
+    * Return a random floating point number N such that a <= N <= b.
+    * Assumes: a <= b
+    * TODO: support (b <= N <= a for b < a).
+    */
+   static double uniform(double a, double b);
 private:
    static void initialize();
    static unsigned seed_value;

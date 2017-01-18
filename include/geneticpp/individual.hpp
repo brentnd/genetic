@@ -42,7 +42,7 @@ public:
    // Mutate this individual using mutation method
    void mutate();
    // Mutation variants for mutation_method
-   void uniform_int(float mutation_rate, int min, int max);
+   void uniform_int(float mutation_rate, double min, double max);
    void flip_bit(float mutation_rate);
    void shuffle_indexes(float mutation_rate);
 
@@ -55,7 +55,9 @@ public:
 
    bool operator==(individual const & other) const;
 
+   std::vector<attribute>::const_iterator begin() const;
    std::vector<attribute>::iterator begin();
+   std::vector<attribute>::const_iterator end() const;
    std::vector<attribute>::iterator end();
    attribute const & at(std::size_t pos) const;
    std::size_t size() const;
@@ -74,17 +76,8 @@ public:
    }
 
    friend std::ostream& operator<<(std::ostream & stream, const individual & ind) {
-      stream << "individual @ (" << static_cast<const void *>(&ind) << ") f=" << ind.fitness << " attributes=[";
-      for (auto const & attr : ind.attributes) {
-         auto val = static_cast<char>(attr);
-         if (val >= ' ' && val <= '~') {
-            stream << val;
-         } else {
-            stream << static_cast<int>(val);
-         }
-         stream << ", ";
-      }
-      stream << "]";
+      // TODO: attribute visitor?
+      stream << "individual @ (" << static_cast<const void *>(&ind) << ") f=" << ind.fitness;
       return stream;
    }
 

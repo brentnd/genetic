@@ -59,7 +59,7 @@ void individual::mutate() {
    valid_fitness = false;
 }
 
-void individual::uniform_int(float mutation_rate, int min, int max) {
+void individual::uniform_int(float mutation_rate, double min, double max) {
    for (auto & attr : attributes) {
       if (random::probability(mutation_rate)) {
          attr.randomize(min, max);
@@ -117,16 +117,24 @@ bool individual::operator==(individual const & other) const {
    return attributes == other.attributes;
 }
 
+std::vector<attribute>::const_iterator individual::begin() const {
+   return attributes.begin();
+}
+
 std::vector<attribute>::iterator individual::begin() {
    return attributes.begin();
 }
 
-attribute const & individual::at(std::size_t pos) const {
-   return attributes.at(pos);
+std::vector<attribute>::const_iterator individual::end() const {
+   return attributes.end();
 }
 
 std::vector<attribute>::iterator individual::end() {
    return attributes.end();
+}
+
+attribute const & individual::at(std::size_t pos) const {
+   return attributes.at(pos);
 }
 
 std::size_t individual::size() const {

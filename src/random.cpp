@@ -21,7 +21,7 @@ void random::reset() {
 }
 
 bool random::probability(double probability_) {
-   float r = uniform(0, 1);
+   float r = uniform(0.0f, 1.0f);
    return r <= probability_;
 }
 
@@ -39,6 +39,15 @@ float random::uniform(float a, float b) {
    }
    float range = b - a;
    float r = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
+   return r * range - a;
+}
+
+double random::uniform(double a, double b) {
+   if (b < a) {
+      throw std::runtime_error("Invalid range");
+   }
+   double range = b - a;
+   double r = static_cast<double>(std::rand()) / static_cast<double>(RAND_MAX);
    return r * range - a;
 }
 

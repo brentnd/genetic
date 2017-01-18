@@ -15,27 +15,19 @@ int main( int argc, char * const * argv ) {
    genetic::population::evolution_method(&genetic::population::crossover_and_mutate, crossover_rate, ind_mutation_rate);
 
    // Individual configuration
-   char min_attr = ' '; // ASCII 33
-   char max_attr = 'z'; // ASCII 122
+   double min_attr = 0.0;
+   double max_attr = 10.0;
    float attr_mutation_rate = 0.1;
-   char solution[] = "hello world!";
-   genetic::individual::mating_method(&genetic::individual::two_point_crossover);
-   genetic::individual::mutation_method(&genetic::individual::uniform_int, attr_mutation_rate,
-                                        static_cast<double>(min_attr), static_cast<double>(max_attr));
-   genetic::individual::attribute_count = sizeof solution - 1;
+   genetic::individual::mating_method(&genetic::individual::one_point_crossover);
+   genetic::individual::mutation_method(&genetic::individual::uniform_int, attr_mutation_rate, min_attr, max_attr);
+   genetic::individual::attribute_count = 10;
    genetic::attribute::seed_method([min_attr, max_attr] () -> double {
-      return random::randint(min_attr, max_attr);
+      return random::uniform(min_attr, max_attr);
    });
-   genetic::individual::evaluation_method([solution] (genetic::individual const & ind) -> int {
+   genetic::individual::evaluation_method([] (genetic::individual const & ind) -> int {
       int fitness = 0;
-      for (unsigned i=0; i < sizeof solution - 1; i++) {
-         char correct = solution[i];
-         char attr = ind.at(i);
-         if (attr == correct) {
-            fitness += 100;
-         } else {
-            fitness -= std::abs(correct - attr);
-         }
+      for (auto const & attr : ind) {
+         fitness += static_cast<int>(attr);
       }
       return fitness;
    });

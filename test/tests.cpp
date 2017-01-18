@@ -241,7 +241,7 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
    }
 
    SECTION ( "20 evolution cycles" ) {
-      genetic::individual::mutation_method(&genetic::individual::uniform_int, static_cast<float>(0.1), static_cast<int>(0), static_cast<int>(100));
+      genetic::individual::mutation_method(&genetic::individual::uniform_int, static_cast<float>(0.1), 0.0, 100.0);
       genetic::population pop(99);
       pop.evaluate();
       auto pop_old = pop;

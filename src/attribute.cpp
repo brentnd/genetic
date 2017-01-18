@@ -2,19 +2,24 @@
 
 namespace genetic {
 
-int value;
+/*static*/ std::function<double()> attribute::seed_function = [] () {
+   return random::uniform(0.0, 100.0);
+};
+
+/*static*/ void attribute::seed_method(std::function<double()> && fcn) {
+   seed_function = std::move(fcn);
+}
 
 attribute::attribute() :
-      value(0) {
+      value(0.0) {
 }
 
 void attribute::seed() {
-   // TODO: attribute seeding function
-   randomize(' ', 'z');
+   value = seed_function();
 }
 
-void attribute::randomize(int min, int max) {
-   value = random::randint(min, max);
+void attribute::randomize(double min, double max) {
+   value = random::uniform(min, max);
 }
 
 void attribute::flip() {
@@ -25,15 +30,8 @@ bool attribute::operator==(attribute const & other) const {
    return value == other.value;
 }
 
-int attribute::operator+(attribute const & other) const {
+double attribute::operator+(attribute const & other) const {
    return value + other.value;
-}
-
-attribute::operator int() const {
-   return value;
-}
-attribute::operator char() const {
-   return static_cast<char>(value);
 }
 
 } // namespace genetic

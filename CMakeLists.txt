@@ -6,6 +6,8 @@ enable_testing()
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include_directories(include)
+include_directories(third-party/Catch/include)
+include_directories(third-party/variant/include)
 
 set(SOURCE_FILES
    src/attribute.cpp
@@ -15,15 +17,19 @@ set(SOURCE_FILES
 
 add_library(geneticpp SHARED ${SOURCE_FILES})
 
-add_executable(geneticpp-example
+add_executable(geneticpp-hello-world
         example/hello_world.cpp
 )
-target_link_libraries(geneticpp-example geneticpp)
+target_link_libraries(geneticpp-hello-world geneticpp)
+add_executable(geneticpp-max-float
+        example/max_float.cpp
+        )
+target_link_libraries(geneticpp-max-float geneticpp)
 add_executable(geneticpp-test
     test/main.cpp
     test/tests.cpp
 )
 target_link_libraries(geneticpp-test geneticpp)
 
-add_test(NAME genetic_short COMMAND geneticpp-example -e -m 0.1 -p 30 -g 10)
+add_test(NAME genetic_short COMMAND geneticpp-hello-world -e -m 0.1 -p 30 -g 10)
 add_test(NAME genetic_test  COMMAND geneticpp-test)

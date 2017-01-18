@@ -65,7 +65,7 @@ void population::crossover_or_mutate(std::size_t lambda, float crossover_rate, f
    population offspring(0);
    offspring.individuals.reserve(lambda);
    for (unsigned i=0; i < lambda; i++) {
-      float op_choice = random::uniform(0, 1);
+      float op_choice = random::uniform(0.0f, 1.0f);
       if (op_choice < crossover_rate) {
          auto mate_pop(select_random(2));
          individual::mate(&mate_pop.individuals[0], &mate_pop.individuals[1]);
