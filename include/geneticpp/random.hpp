@@ -1,5 +1,4 @@
-#ifndef RANDOM_HPP
-#define RANDOM_HPP
+#pragma once
 
 #include <vector>
 
@@ -49,6 +48,3 @@ private:
    static void initialize();
    static unsigned seed_value;
 };
-
-
-#endif //RANDOM_HPP

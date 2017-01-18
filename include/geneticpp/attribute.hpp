@@ -1,5 +1,4 @@
-#ifndef GENETIC_ATTRIBUTE_HPP
-#define GENETIC_ATTRIBUTE_HPP
+#pragma once
 
 #include "random.hpp"
 
@@ -40,5 +39,3 @@ private:
 };
 
 } // namespace genetic
-
-#endif //GENETIC_ATTRIBUTE_HPP

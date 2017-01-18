@@ -1,5 +1,4 @@
-#ifndef GENETIC_POPULATION_HPP
-#define GENETIC_POPULATION_HPP
+#pragma once
 
 #include <algorithm>
 #include <cassert>
@@ -65,5 +64,3 @@ private:
 };
 
 } // namespace genetic
-
-#endif //GENETIC_POPULATION_HPP

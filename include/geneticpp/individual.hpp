@@ -1,5 +1,4 @@
-#ifndef GENETIC_INDIVIDUAL_HPP
-#define GENETIC_INDIVIDUAL_HPP
+#pragma once
 
 #include <algorithm> // std::min, std::swap_ranges
 #include <functional> // std::function
@@ -102,5 +101,3 @@ private:
 };
 
 } // namespace genetic
-
-#endif //GENETIC_INDIVIDUAL_HPP
