@@ -12,5 +12,16 @@ CMake is used for all builds. `build.sh` bash script is used to run all CMake ta
 ## Tests
 
 [Catch](https://github.com/philsquared/Catch) is used for testing. All test files are found in `test/`.
- Current tests for `random`, `sequence`, and `population`. This is an area for improvement or re-writing maybe with
- GTest.
+ Current tests for `random`, `sequence`, and `population`.
+ 
+### TODO
+* Hall of fame
+* Multiple objectives (fitness)
+* Objective weighting
+* Dynamic individual attribute count
+* Logging
+* More examples
+* Switch to GTest and re-write tests to improve coverage
+* Mutation functions (gaussian, polynomial bound, ES log normal)
+* Crossover functions (uniform, partially matched, ordered, blend, simulated binary)
+* Selection functions (roulette, double tournament, stochastic universal sampling, lexicase)
