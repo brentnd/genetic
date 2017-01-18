@@ -24,13 +24,6 @@ int main( int argc, char * const * argv ) {
    genetic::attribute::seed_method([min_attr, max_attr] () -> double {
       return random::uniform(min_attr, max_attr);
    });
-   genetic::individual::evaluation_method([] (genetic::individual const & ind) -> int {
-      int fitness = 0;
-      for (auto const & attr : ind) {
-         fitness += static_cast<int>(attr);
-      }
-      return fitness;
-   });
 
    unsigned generations = 40;
    std::size_t population_size = 500;

@@ -97,9 +97,10 @@ int individual::evaluate() {
 }
 
 /*static*/ int individual::eval_sum(individual const & ind) {
-   return std::accumulate(ind.attributes.begin(), ind.attributes.end(), 0, [] (int current_sum, attribute const & attr) {
-      return current_sum + static_cast<int>(attr);
-   });
+   return static_cast<int>(std::accumulate(ind.attributes.begin(), ind.attributes.end(), 0.0,
+                                           [] (double current_sum, attribute const & attr) -> double {
+                                              return current_sum + static_cast<double>(attr);
+                                           }));
 }
 
 bool individual::operator<(individual const & other) const {
