@@ -25,6 +25,11 @@ add_executable(geneticpp-max-float
         example/max_float.cpp
         )
 target_link_libraries(geneticpp-max-float geneticpp)
+add_executable(geneticpp-multiple-objectives
+        example/multiple_objectives.cpp
+        )
+target_link_libraries(geneticpp-multiple-objectives geneticpp)
+
 add_executable(geneticpp-test
     test/main.cpp
     test/tests.cpp

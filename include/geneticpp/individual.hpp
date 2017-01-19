@@ -28,10 +28,14 @@ public:
    static void two_point_crossover(individual * ind1, individual * ind2);
 
    // Evaluate this individuals fitness
-   float evaluate();
-   static float eval_sum(individual const & ind);
+   void evaluate();
+   float weighted_fitness() const;
+   static std::vector<float> eval_sum(individual const & ind);
+   float sum_attributes() const;
    // Custom function for evaluation
-   static void evaluation_method(std::function<int(individual const &)> && fcn);
+   static void evaluation_method(std::function<std::vector<float>(individual const &)> && fcn);
+
+   static void objective_weight_method(std::initializer_list<float> && weights);
 
    // Mutation
    template <typename... Args>
@@ -61,21 +65,8 @@ public:
    attribute const & at(std::size_t pos) const;
    std::size_t size() const;
 
-   std::string to_string() const {
-      std::string sol;
-      for (auto const & attr : attributes) {
-         char val = attr;
-         if (val > ' ' && val < '~') {
-            sol += static_cast<char>(attr);
-         } else {
-            sol += '?';
-         }
-      }
-      return std::move(sol);
-   }
-
    friend std::ostream& operator<<(std::ostream & stream, individual const & ind) {
-      stream << "individual @ (" << static_cast<const void *>(&ind) << ") f=" << ind.fitness;
+      stream << "individual @ (" << static_cast<const void *>(&ind) << ") f=" << ind.weighted_fitness();
 
       stream << " attr=[";
       for (auto const & attr : ind.attributes) {
@@ -89,14 +80,24 @@ public:
    static std::size_t attribute_count;
 
 private:
-   static std::function<float(individual const &)> evaluation_function;
+   static std::function<std::vector<float>(individual const &)> evaluation_function;
    static std::function<void(individual *, individual *)> mating_function;
    static std::function<void(individual &)> mutation_function;
    void throw_if_fitness_invalid() const;
 
 private:
-   float fitness;
-   bool valid_fitness;
+   static std::size_t objective_count;
+   static std::vector<float> objective_weights;
+
+   struct fitness_container {
+      std::vector<float> values;
+      bool valid;
+
+      fitness_container(std::size_t size) :
+            values(size),
+            valid(false) {
+      }
+   } fitness;
    std::vector<attribute> attributes;
 };
 

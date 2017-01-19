@@ -23,7 +23,7 @@ int main( int argc, char * const * argv ) {
    genetic::individual::mutation_method(&genetic::individual::uniform_int, attr_mutation_rate,
                                         static_cast<double>(min_attr), static_cast<double>(max_attr));
    genetic::individual::attribute_count = sizeof solution - 1;
-   genetic::individual::evaluation_method([solution] (genetic::individual const & ind) -> float {
+   genetic::individual::evaluation_method([solution] (genetic::individual const & ind) -> std::vector<float> {
       float fitness = 0.0;
       for (unsigned i=0; i < sizeof solution - 1; i++) {
          char correct = solution[i];
@@ -34,7 +34,7 @@ int main( int argc, char * const * argv ) {
             fitness -= std::abs(correct - attr);
          }
       }
-      return fitness;
+      return {fitness};
    });
    genetic::attribute::seed_method([min_attr, max_attr] () -> double {
       return random::randint(min_attr, max_attr);

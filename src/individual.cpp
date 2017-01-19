@@ -3,22 +3,23 @@
 
 namespace genetic {
 
-/*static*/ std::function<float(individual const &)> individual::evaluation_function = &individual::eval_sum;
+/*static*/ std::function<std::vector<float>(individual const &)> individual::evaluation_function = &individual::eval_sum;
 /*static*/ std::function<void(individual *, individual *)> individual::mating_function = &individual::two_point_crossover;
 /*static*/ std::function<void(individual &)> individual::mutation_function =
       std::bind(&individual::shuffle_indexes, std::placeholders::_1, static_cast<float>(0.05));
 /*static*/ std::size_t individual::attribute_count = 100;
+/*static*/ std::size_t individual::objective_count = 1;
+/*static*/ std::vector<float> individual::objective_weights = { 1.0 };
 
 individual::individual() :
-      fitness(0),
-      valid_fitness(false),
+      fitness(objective_count),
       attributes(attribute_count) {
 }
 
 /*static*/ void individual::mate(individual * ind1, individual * ind2) {
    mating_function(ind1, ind2);
-   ind1->valid_fitness = false;
-   ind2->valid_fitness = false;
+   ind1->fitness.valid = false;
+   ind2->fitness.valid = false;
 }
 
 /*static*/ void individual::one_point_crossover(individual * ind1, individual * ind2) {
@@ -43,20 +44,25 @@ individual::individual() :
    std::swap_ranges(ind1->attributes.begin() + point1, ind1->attributes.begin() + point2, ind2->attributes.begin() + point1);
 }
 
-/*static*/ void individual::evaluation_method(std::function<int(individual const &)> && fcn) {
+/*static*/ void individual::evaluation_method(std::function<std::vector<float>(individual const &)> && fcn) {
    evaluation_function = std::move(fcn);
+}
+
+/*static*/ void individual::objective_weight_method(std::initializer_list<float> && weights){
+   objective_weights = std::move(weights);
+   objective_count = objective_weights.size();
 }
 
 void individual::seed() {
    for (auto & attr : attributes) {
       attr.seed();
    }
-   valid_fitness = false;
+   fitness.valid = false;
 }
 
 void individual::mutate() {
    mutation_function(*this);
-   valid_fitness = false;
+   fitness.valid = false;
 }
 
 void individual::uniform_int(float mutation_rate, double min, double max) {
@@ -88,29 +94,41 @@ void individual::shuffle_indexes(float mutation_rate) {
    }
 }
 
-float individual::evaluate() {
-   if (!valid_fitness) {
-      fitness = evaluation_function(*this);
-      valid_fitness = true;
+void individual::evaluate() {
+   if (!fitness.valid) {
+      fitness.values = evaluation_function(*this);
+      fitness.valid = true;
    }
-   return fitness;
 }
 
-/*static*/ float individual::eval_sum(individual const & ind) {
-   return std::accumulate(ind.attributes.begin(), ind.attributes.end(), 0.0f,
-                                           [] (float current_sum, attribute const & attr) -> float {
-                                              return current_sum + static_cast<float>(attr);
-                                           });
+float individual::weighted_fitness() const {
+   throw_if_fitness_invalid();
+   float total_fitness = 0.0;
+   for (unsigned i=0; i < objective_count; i++) {
+      total_fitness += objective_weights[i] * fitness.values[i];
+   }
+   return total_fitness;
+}
+
+/*static*/ std::vector<float> individual::eval_sum(individual const & ind) {
+   return {ind.sum_attributes()};
+}
+
+float individual::sum_attributes() const {
+   return std::accumulate(attributes.begin(), attributes.end(), 0.0f,
+                          [] (float current_sum, attribute const & attr) -> float {
+                             return current_sum + static_cast<float>(attr);
+                          });
 }
 
 bool individual::operator<(individual const & other) const {
    throw_if_fitness_invalid(); other.throw_if_fitness_invalid();
-   return fitness < other.fitness;
+   return weighted_fitness() < other.weighted_fitness();
 }
 
 bool individual::operator>(individual const & other) const {
    throw_if_fitness_invalid(); other.throw_if_fitness_invalid();
-   return fitness > other.fitness;
+   return weighted_fitness() > other.weighted_fitness();
 }
 
 bool individual::operator==(individual const & other) const {
@@ -143,7 +161,7 @@ std::size_t individual::size() const {
 }
 
 void individual::throw_if_fitness_invalid() const {
-   if (!valid_fitness) {
+   if (!fitness.valid) {
       throw std::runtime_error("attempting to compare individuals with invalid fitness");
    }
 }

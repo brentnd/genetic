@@ -96,7 +96,7 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       a.evaluate(); b.evaluate();
       // Two random individuals don't match
       REQUIRE_FALSE(a == b);
-      REQUIRE_FALSE(a.evaluate() == b.evaluate());
+      REQUIRE_FALSE(a.weighted_fitness() == b.weighted_fitness());
    }
 
    SECTION ( "mutations with different rates" ) {
@@ -110,19 +110,19 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       a.mutate();
       a.evaluate();
       REQUIRE(a_dup == a);
-      REQUIRE(a_dup.evaluate() == a.evaluate());
+      REQUIRE(a_dup.weighted_fitness() == a.weighted_fitness());
       // Mutation > 0.0 should modify genes
       genetic::individual::mutation_method(&genetic::individual::flip_bit, static_cast<float>(0.5));
       a.mutate();
       a.evaluate();
       REQUIRE_FALSE(a_dup == a);
-      REQUIRE(a_dup.evaluate() != a.evaluate());
+      REQUIRE(a_dup.weighted_fitness() != a.weighted_fitness());
       // Mutation == 1.0 should modify again
       genetic::individual::mutation_method(&genetic::individual::flip_bit, static_cast<float>(1.0));
       a.mutate();
       a.evaluate();
       REQUIRE_FALSE(a_dup == a);
-      REQUIRE(a_dup.evaluate() != a.evaluate());
+      REQUIRE(a_dup.weighted_fitness() != a.weighted_fitness());
    }
 
    SECTION ( "mating results in different children" ) {
@@ -151,17 +151,20 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
    SECTION ( "custom mutation function can be set" ) {
       genetic::individual::mutation_method(&genetic::individual::flip_bit, static_cast<float>(0.5));
       genetic::individual a;
-      REQUIRE(a.evaluate() == 0);
+      a.evaluate();
+      REQUIRE(a.weighted_fitness() == 0);
       a.mutate();
-      REQUIRE(a.evaluate() != 0);
+      a.evaluate();
+      REQUIRE(a.weighted_fitness() != 0);
    }
 
    SECTION ( "custom evaluation function can be set" ) {
-      genetic::individual::evaluation_method([] (genetic::individual const & ind) -> int {
-         return 42;
+      genetic::individual::evaluation_method([] (genetic::individual const & ind) -> std::vector<float> {
+         return {42};
       });
       genetic::individual a;
-      REQUIRE(a.evaluate() == 42);
+      a.evaluate();
+      REQUIRE(a.weighted_fitness() == 42);
    }
 
    SECTION ( "fitness evaluation" ) {
@@ -208,7 +211,7 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
       pop.evaluate();
       auto pop_old = pop;
       pop.evolve(1);
-      REQUIRE(pop.select_best(1)[0].evaluate() >= pop_old.select_best(1)[0].evaluate());
+      REQUIRE(pop.select_best(1)[0].weighted_fitness() >= pop_old.select_best(1)[0].weighted_fitness());
    }
 
    SECTION ( "evolution with select_worst might improve fitness" ) {
@@ -237,7 +240,7 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
       pop.evaluate();
       auto pop_old = pop;
       pop.evolve(1);
-      REQUIRE(pop.select_best(1)[0].evaluate() >= pop_old.select_best(1)[0].evaluate());
+      REQUIRE(pop.select_best(1)[0].weighted_fitness() >= pop_old.select_best(1)[0].weighted_fitness());
    }
 
    SECTION ( "20 evolution cycles" ) {
@@ -246,7 +249,7 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
       pop.evaluate();
       auto pop_old = pop;
       pop.evolve(20);
-      REQUIRE(pop.select_best(1)[0].evaluate() >= pop_old.select_best(1)[0].evaluate());
+      REQUIRE(pop.select_best(1)[0].weighted_fitness() >= pop_old.select_best(1)[0].weighted_fitness());
       REQUIRE(pop.size() == pop_old.size());
    }
 }

@@ -120,7 +120,7 @@ std::size_t population::size() const {
 
 void population::print_stats(unsigned generation /*=0*/) const {
    auto best1(select_best(1)[0]);
-   std::printf("Population generation=%d size=%lu, best=%f\n", generation, size(), best1.evaluate());
+   std::printf("Population generation=%d size=%lu, best=%f\n", generation, size(), best1.weighted_fitness());
    std::cout << "Best:" << best1 << std::endl;
 }
 

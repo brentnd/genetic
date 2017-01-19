@@ -16,8 +16,6 @@ CMake is used for all builds. `build.sh` bash script is used to run all CMake ta
  
 ### TODO
 * Hall of fame
-* Multiple objectives (fitness)
-* Objective weighting
 * Dynamic individual attribute count
 * Logging
 * More examples
