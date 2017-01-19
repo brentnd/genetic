@@ -8,18 +8,16 @@ namespace genetic {
 /*static*/ std::function<void(individual &)> individual::mutation_function =
       std::bind(&individual::shuffle_indexes, std::placeholders::_1, static_cast<float>(0.05));
 /*static*/ std::size_t individual::attribute_count = 100;
-/*static*/ std::size_t individual::objective_count = 1;
-/*static*/ std::vector<float> individual::objective_weights = { 1.0 };
 
 individual::individual() :
-      fitness(objective_count),
+      fit(),
       attributes(attribute_count) {
 }
 
 /*static*/ void individual::mate(individual * ind1, individual * ind2) {
    mating_function(ind1, ind2);
-   ind1->fitness.valid = false;
-   ind2->fitness.valid = false;
+   ind1->fit.dirty();
+   ind2->fit.dirty();
 }
 
 /*static*/ void individual::one_point_crossover(individual * ind1, individual * ind2) {
@@ -48,21 +46,16 @@ individual::individual() :
    evaluation_function = std::move(fcn);
 }
 
-/*static*/ void individual::objective_weight_method(std::initializer_list<float> && weights){
-   objective_weights = std::move(weights);
-   objective_count = objective_weights.size();
-}
-
 void individual::seed() {
    for (auto & attr : attributes) {
       attr.seed();
    }
-   fitness.valid = false;
+   fit.dirty();
 }
 
 void individual::mutate() {
    mutation_function(*this);
-   fitness.valid = false;
+   fit.dirty();
 }
 
 void individual::uniform_int(float mutation_rate, double min, double max) {
@@ -95,19 +88,13 @@ void individual::shuffle_indexes(float mutation_rate) {
 }
 
 void individual::evaluate() {
-   if (!fitness.valid) {
-      fitness.values = evaluation_function(*this);
-      fitness.valid = true;
+   if (!fit.valid()) {
+      fit.update(evaluation_function(*this));
    }
 }
 
 float individual::weighted_fitness() const {
-   throw_if_fitness_invalid();
-   float total_fitness = 0.0;
-   for (unsigned i=0; i < objective_count; i++) {
-      total_fitness += objective_weights[i] * fitness.values[i];
-   }
-   return total_fitness;
+   return fit.weighted_fitness();
 }
 
 /*static*/ std::vector<float> individual::eval_sum(individual const & ind) {
@@ -122,17 +109,14 @@ float individual::sum_attributes() const {
 }
 
 bool individual::operator<(individual const & other) const {
-   throw_if_fitness_invalid(); other.throw_if_fitness_invalid();
-   return weighted_fitness() < other.weighted_fitness();
+   return fit < other.fit;
 }
 
 bool individual::operator>(individual const & other) const {
-   throw_if_fitness_invalid(); other.throw_if_fitness_invalid();
-   return weighted_fitness() > other.weighted_fitness();
+   return fit > other.fit;
 }
 
 bool individual::operator==(individual const & other) const {
-   throw_if_fitness_invalid(); other.throw_if_fitness_invalid();
    return attributes == other.attributes;
 }
 
@@ -158,12 +142,6 @@ attribute const & individual::at(std::size_t pos) const {
 
 std::size_t individual::size() const {
    return attributes.size();
-}
-
-void individual::throw_if_fitness_invalid() const {
-   if (!fitness.valid) {
-      throw std::runtime_error("attempting to compare individuals with invalid fitness");
-   }
 }
 
 } // namespace genetic

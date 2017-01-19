@@ -170,20 +170,20 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
    SECTION ( "fitness evaluation" ) {
       // Both invalid
       genetic::individual a, b;
-      REQUIRE_THROWS(a == b);
+      REQUIRE_NOTHROW(a == b);
       REQUIRE_THROWS(a > b);
       REQUIRE_THROWS(a < b);
 
       // B invalid
       a.evaluate();
-      REQUIRE_THROWS(a == b);
+      REQUIRE_NOTHROW(a == b);
       REQUIRE_THROWS(a > b);
       REQUIRE_THROWS(a < b);
 
       // A mutation caused invalid, but B valid
       a.mutate();
       b.evaluate();
-      REQUIRE_THROWS(a == b);
+      REQUIRE_NOTHROW(a == b);
       REQUIRE_THROWS(a > b);
       REQUIRE_THROWS(a < b);
 

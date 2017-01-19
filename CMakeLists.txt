@@ -10,6 +10,7 @@ include_directories(third-party/Catch/include)
 include_directories(third-party/variant/include)
 
 set(SOURCE_FILES
+   src/fitness.cpp
    src/attribute.cpp
    src/individual.cpp
    src/population.cpp

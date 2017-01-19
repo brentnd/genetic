@@ -13,7 +13,7 @@ int main( int argc, char * const * argv ) {
 
    // Individual configuration
    genetic::individual::attribute_count = 10;
-   genetic::individual::objective_weight_method({1.0, 0.5});
+   genetic::fitness::objective_weights({1.0, 0.5});
    genetic::individual::evaluation_method([] (genetic::individual const & ind) -> std::vector<float> {
       // Maximize even numbers
       float evenness = 0.0;

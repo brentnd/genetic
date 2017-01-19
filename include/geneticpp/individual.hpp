@@ -8,6 +8,7 @@
 
 #include "random.hpp"
 #include "attribute.hpp"
+#include "fitness.hpp"
 
 namespace genetic {
 
@@ -34,8 +35,6 @@ public:
    float sum_attributes() const;
    // Custom function for evaluation
    static void evaluation_method(std::function<std::vector<float>(individual const &)> && fcn);
-
-   static void objective_weight_method(std::initializer_list<float> && weights);
 
    // Mutation
    template <typename... Args>
@@ -86,18 +85,7 @@ private:
    void throw_if_fitness_invalid() const;
 
 private:
-   static std::size_t objective_count;
-   static std::vector<float> objective_weights;
-
-   struct fitness_container {
-      std::vector<float> values;
-      bool valid;
-
-      fitness_container(std::size_t size) :
-            values(size),
-            valid(false) {
-      }
-   } fitness;
+   fitness fit;
    std::vector<attribute> attributes;
 };
 
