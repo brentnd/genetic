@@ -27,6 +27,7 @@ public:
    // Mating variants for mating_method
    static void one_point_crossover(individual * ind1, individual * ind2);
    static void two_point_crossover(individual * ind1, individual * ind2);
+   static void uniform_crossover(individual * ind1, individual * ind2, float indpb);
 
    // Evaluate this individuals fitness
    void evaluate();

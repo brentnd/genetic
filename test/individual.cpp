@@ -21,19 +21,19 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       genetic::individual a_dup = a;
       REQUIRE(a_dup == a);
       // Mutate (0 = none)
-      genetic::individual::mutation_method(&genetic::individual::flip_bit, static_cast<float>(0.0));
+      genetic::individual::mutation_method(&genetic::individual::flip_bit, 0.0f);
       a.mutate();
       a.evaluate();
       REQUIRE(a_dup == a);
       REQUIRE(a_dup.weighted_fitness() == a.weighted_fitness());
       // Mutation > 0.0 should modify genes
-      genetic::individual::mutation_method(&genetic::individual::flip_bit, static_cast<float>(0.5));
+      genetic::individual::mutation_method(&genetic::individual::flip_bit, 0.5f);
       a.mutate();
       a.evaluate();
       REQUIRE_FALSE(a_dup == a);
       REQUIRE(a_dup.weighted_fitness() != a.weighted_fitness());
       // Mutation == 1.0 should modify again
-      genetic::individual::mutation_method(&genetic::individual::flip_bit, static_cast<float>(1.0));
+      genetic::individual::mutation_method(&genetic::individual::flip_bit, 1.0f);
       a.mutate();
       a.evaluate();
       REQUIRE_FALSE(a_dup == a);
@@ -63,8 +63,20 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE_FALSE(b == b_old);
    }
 
+   SECTION ( "custom mating function uniform can be set" ) {
+      genetic::individual::mating_method(&genetic::individual::uniform_crossover, 0.5f);
+      genetic::individual a, b;
+      a.seed(); b.seed();
+      a.evaluate(); b.evaluate();
+      genetic::individual a_old = a, b_old = b;
+      genetic::individual::mate(&a, &b);
+      a.evaluate(); b.evaluate();
+      REQUIRE_FALSE(a == a_old);
+      REQUIRE_FALSE(b == b_old);
+   }
+
    SECTION ( "custom mutation function can be set" ) {
-      genetic::individual::mutation_method(&genetic::individual::flip_bit, static_cast<float>(0.5));
+      genetic::individual::mutation_method(&genetic::individual::flip_bit, 0.5f);
       genetic::individual a;
       a.evaluate();
       REQUIRE(a.weighted_fitness() == 0);

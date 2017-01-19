@@ -42,6 +42,15 @@ individual::individual() :
    std::swap_ranges(ind1->attributes.begin() + point1, ind1->attributes.begin() + point2, ind2->attributes.begin() + point1);
 }
 
+/*static*/ void individual::uniform_crossover(individual *ind1, individual *ind2, float indpb) {
+   std::size_t size = std::min(ind1->size(), ind2->size());
+   for (unsigned i=0; i < size; i++) {
+      if (random::probability(indpb)) {
+         std::swap(ind1->attributes[i], ind2->attributes[i]);
+      }
+   }
+}
+
 /*static*/ void individual::evaluation_method(std::function<std::vector<float>(individual const &)> && fcn) {
    evaluation_function = std::move(fcn);
 }
