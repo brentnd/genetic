@@ -33,7 +33,9 @@ target_link_libraries(geneticpp-multiple-objectives geneticpp)
 
 add_executable(geneticpp-test
     test/main.cpp
-    test/tests.cpp
+        test/population.cpp
+    test/random.cpp
+    test/individual.cpp
 )
 target_link_libraries(geneticpp-test geneticpp)
 
