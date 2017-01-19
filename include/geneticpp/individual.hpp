@@ -28,8 +28,8 @@ public:
    static void two_point_crossover(individual * ind1, individual * ind2);
 
    // Evaluate this individuals fitness
-   int evaluate();
-   static int eval_sum(individual const & ind);
+   float evaluate();
+   static float eval_sum(individual const & ind);
    // Custom function for evaluation
    static void evaluation_method(std::function<int(individual const &)> && fcn);
 
@@ -89,13 +89,13 @@ public:
    static std::size_t attribute_count;
 
 private:
-   static std::function<int(individual const &)> evaluation_function;
+   static std::function<float(individual const &)> evaluation_function;
    static std::function<void(individual *, individual *)> mating_function;
    static std::function<void(individual &)> mutation_function;
    void throw_if_fitness_invalid() const;
 
 private:
-   int fitness;
+   float fitness;
    bool valid_fitness;
    std::vector<attribute> attributes;
 };

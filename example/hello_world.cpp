@@ -23,8 +23,8 @@ int main( int argc, char * const * argv ) {
    genetic::individual::mutation_method(&genetic::individual::uniform_int, attr_mutation_rate,
                                         static_cast<double>(min_attr), static_cast<double>(max_attr));
    genetic::individual::attribute_count = sizeof solution - 1;
-   genetic::individual::evaluation_method([solution] (genetic::individual const & ind) -> int {
-      int fitness = 0;
+   genetic::individual::evaluation_method([solution] (genetic::individual const & ind) -> float {
+      float fitness = 0.0;
       for (unsigned i=0; i < sizeof solution - 1; i++) {
          char correct = solution[i];
          char attr = ind.at(i);
