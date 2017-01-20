@@ -22,4 +22,3 @@ CMake is used for all builds. `build.sh` bash script is used to run all CMake ta
 * Switch to GTest and re-write tests to improve coverage
 * Mutation functions (gaussian, polynomial bound, ES log normal)
 * Crossover functions (partially matched, simulated binary)
-* Selection functions (roulette, double tournament, stochastic universal sampling, lexicase)

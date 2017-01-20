@@ -30,6 +30,15 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
       pop.evolve(1);
    }
 
+   SECTION ( "evolution with select_roulette and extra args" ) {
+      std::size_t tournament_size = 3;
+      genetic::population::selection_method(&genetic::population::select_roulette);
+      genetic::population pop(50);
+      pop.evaluate();
+      auto pop_old = pop;
+      pop.evolve(1);
+   }
+
    SECTION ( "evolution with select_tournament and extra args" ) {
       std::size_t tournament_size = 3;
       genetic::population::selection_method(&genetic::population::select_tournament, tournament_size);

@@ -39,6 +39,9 @@ public:
    // Generate an entirely new population by tournament selection
    population select_tournament(std::size_t k, std::size_t tournament_size) const;
 
+   // Generate an entirely new population by k spins of roulette
+   population select_roulette(std::size_t k) const;
+
    void crossover_and_mutate(float crossover_rate, float mutation_rate);
    void crossover_or_mutate(std::size_t lambda, float crossover_rate, float mutation_rate);
    void crossover(float crossover_rate);

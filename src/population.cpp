@@ -53,6 +53,30 @@ population population::select_tournament(std::size_t k, std::size_t tournament_s
    return std::move(tournament_champions);
 }
 
+population population::select_roulette(std::size_t k) const {
+   population chosen(0);
+   auto sorted_individuals(individuals);
+   std::sort(sorted_individuals.begin(), sorted_individuals.end(), std::greater<individual>());
+   float population_sum = std::accumulate(individuals.begin(), individuals.end(), 0.0f,
+                                          [] (float current_sum, individual const & ind) -> float {
+                                             return current_sum + ind.weighted_fitness();
+                                          });
+   float target_sum, spin_sum;
+   for (unsigned i=0; i < k; i++) {
+      target_sum = random::uniform(0.0, 1.0) * population_sum;
+      spin_sum = 0.0;
+      for (auto const & ind : sorted_individuals) {
+         spin_sum += ind.weighted_fitness();
+         if (spin_sum > target_sum) {
+            chosen.individuals.push_back(ind);
+            break;
+         }
+      }
+   }
+   assert(chosen.size() == k);
+   return std::move(chosen);
+}
+
 void population::crossover_and_mutate(float crossover_rate, float mutation_rate) {
    crossover(crossover_rate);
    mutate(mutation_rate);
