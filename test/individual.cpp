@@ -63,8 +63,37 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE_FALSE(b == b_old);
    }
 
-   SECTION ( "custom mating function uniform can be set" ) {
-      genetic::individual::mating_method(&genetic::individual::uniform_crossover, 0.5f);
+   SECTION ( "custom mating function ordered throws when invalid" ) {
+      genetic::individual::mating_method(&genetic::individual::ordered_crossover);
+      genetic::individual::attribute_count = 6;
+      genetic::attribute::seed_method([] () {
+         return 10; // higher than attribute count
+      });
+      genetic::individual a, b;
+      a.seed(); b.seed();
+      a.evaluate(); b.evaluate();
+      genetic::individual a_old = a, b_old = b;
+      REQUIRE_THROWS(genetic::individual::mate(&a, &b));
+   }
+
+   SECTION ( "custom mating function ordered works" ) {
+      genetic::individual::mating_method(&genetic::individual::ordered_crossover);
+      genetic::individual::attribute_count = 10;
+      genetic::attribute::seed_method([] () {
+         return random::randint(0, 9);
+      });
+      genetic::individual a, b;
+      a.seed(); b.seed();
+      a.evaluate(); b.evaluate();
+      genetic::individual a_old = a, b_old = b;
+      REQUIRE_NOTHROW(genetic::individual::mate(&a, &b));
+      a.evaluate(); b.evaluate();
+      REQUIRE_FALSE(a == a_old);
+      REQUIRE_FALSE(b == b_old);
+   }
+
+   SECTION ( "custom mating function ordered can be set" ) {
+      genetic::individual::mating_method(&genetic::individual::ordered_crossover);
       genetic::individual a, b;
       a.seed(); b.seed();
       a.evaluate(); b.evaluate();

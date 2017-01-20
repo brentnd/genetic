@@ -28,6 +28,7 @@ public:
    static void one_point_crossover(individual * ind1, individual * ind2);
    static void two_point_crossover(individual * ind1, individual * ind2);
    static void uniform_crossover(individual * ind1, individual * ind2, float indpb);
+   static void ordered_crossover(individual * ind1, individual * ind2);
 
    // Evaluate this individuals fitness
    void evaluate();

@@ -51,6 +51,47 @@ individual::individual() :
    }
 }
 
+/*static*/ void individual::ordered_crossover(individual * ind1, individual * ind2) {
+   std::size_t size, a, b;
+   size = std::min(ind1->size(), ind2->size());
+   a = random::randint(0, size);
+   b = random::randint(0, size);
+
+   if (a > b) {
+      std::swap(a,b);
+   }
+
+   std::vector<bool> holes1(size, true), holes2(size, true);
+   try {
+      for (unsigned i = 0; i < size; i++) {
+         if (i < a || i > b) {
+            holes1.at(ind2->at(i)) = false;
+            holes2.at(ind1->at(i)) = false;
+         }
+      }
+   } catch (std::out_of_range const & e) {
+      throw std::out_of_range("ordered_crossover can only be used when the attribute value never exceeds attribute count");
+   }
+
+   auto temp1 = ind1->attributes;
+   auto temp2 = ind2->attributes;
+   std::size_t k1 = b + 1, k2 = b + 1;
+   for (unsigned i=0; i < size; i++) {
+      if (!holes1[temp1[(i + b + 1) % size]]) {
+         ind1->attributes[k1 % size] = temp1[(i + b + 1) % size];
+         ++k1;
+      }
+      if (!holes2[temp2[(i + b + 1) % size]]) {
+         ind2->attributes[k2 % size] = temp2[(i + b + 1) % size];
+         ++k2;
+      }
+   }
+
+   for (unsigned i=a; i <= b; i++) {
+      std::swap(ind1->attributes[i], ind2->attributes[i]);
+   }
+}
+
 /*static*/ void individual::evaluation_method(std::function<std::vector<float>(individual const &)> && fcn) {
    evaluation_function = std::move(fcn);
 }
