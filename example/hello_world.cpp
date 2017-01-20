@@ -19,7 +19,7 @@ int main( int argc, char * const * argv ) {
    char max_attr = 'z'; // ASCII 122
    float attr_mutation_rate = 0.1;
    char solution[] = "hello world!";
-   genetic::individual::mating_method(&genetic::individual::two_point_crossover);
+   genetic::individual::crossover_method(&genetic::individual::two_point_crossover);
    genetic::individual::mutation_method(&genetic::individual::uniform_int, attr_mutation_rate, static_cast<int>(min_attr), static_cast<int>(max_attr));
    genetic::individual::attribute_count = sizeof solution - 1;
    genetic::individual::evaluation_method([solution] (genetic::individual const & ind) -> std::vector<float> {

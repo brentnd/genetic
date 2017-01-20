@@ -4,7 +4,7 @@
 namespace genetic {
 
 /*static*/ std::function<std::vector<float>(individual const &)> individual::evaluation_function = &individual::eval_sum;
-/*static*/ std::function<void(individual *, individual *)> individual::mating_function = &individual::two_point_crossover;
+/*static*/ std::function<void(individual *, individual *)> individual::crossover_function = &individual::two_point_crossover;
 /*static*/ std::function<void(individual &)> individual::mutation_function =
       std::bind(&individual::shuffle_indexes, std::placeholders::_1, static_cast<float>(0.05));
 /*static*/ std::size_t individual::attribute_count = 100;
@@ -15,7 +15,7 @@ individual::individual() :
 }
 
 /*static*/ void individual::mate(individual * ind1, individual * ind2) {
-   mating_function(ind1, ind2);
+   crossover_function(ind1, ind2);
    ind1->fit.dirty();
    ind2->fit.dirty();
 }

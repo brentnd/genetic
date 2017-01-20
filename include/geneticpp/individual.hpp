@@ -16,15 +16,15 @@ class individual {
 public:
    individual();
 
-   // Mating
+   // crossover
    template <typename... Args>
-   static void mating_method(void (*fcn)(individual *, individual *, Args...), Args... args) {
-      mating_function = std::bind(fcn, std::placeholders::_1, std::placeholders::_2, std::forward<Args>(args)...);
+   static void crossover_method(void (*fcn)(individual *, individual *, Args...), Args... args) {
+      crossover_function = std::bind(fcn, std::placeholders::_1, std::placeholders::_2, std::forward<Args>(args)...);
    }
 
    // Mate two individuals using static method
    static void mate(individual * ind1, individual * ind2);
-   // Mating variants for mating_method
+   // crossover variants for crossover_method
    static void one_point_crossover(individual * ind1, individual * ind2);
    static void two_point_crossover(individual * ind1, individual * ind2);
    static void uniform_crossover(individual * ind1, individual * ind2, float indpb);
@@ -83,7 +83,7 @@ public:
 
 private:
    static std::function<std::vector<float>(individual const &)> evaluation_function;
-   static std::function<void(individual *, individual *)> mating_function;
+   static std::function<void(individual *, individual *)> crossover_function;
    static std::function<void(individual &)> mutation_function;
    void throw_if_fitness_invalid() const;
 

@@ -40,7 +40,7 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE(a_dup.weighted_fitness() != a.weighted_fitness());
    }
 
-   SECTION ( "mating results in different children" ) {
+   SECTION ( "crossover results in different children" ) {
       genetic::individual a, b;
       a.seed(); b.seed();
       a.evaluate(); b.evaluate();
@@ -51,8 +51,8 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE_FALSE(b == b_old);
    }
 
-   SECTION ( "custom mating function can be set" ) {
-      genetic::individual::mating_method(&genetic::individual::one_point_crossover);
+   SECTION ( "custom crossover function can be set" ) {
+      genetic::individual::crossover_method(&genetic::individual::one_point_crossover);
       genetic::individual a, b;
       a.seed(); b.seed();
       a.evaluate(); b.evaluate();
@@ -63,8 +63,8 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE_FALSE(b == b_old);
    }
 
-   SECTION ( "custom mating function ordered throws when invalid" ) {
-      genetic::individual::mating_method(&genetic::individual::ordered_crossover);
+   SECTION ( "custom crossover function ordered throws when invalid" ) {
+      genetic::individual::crossover_method(&genetic::individual::ordered_crossover);
       genetic::individual::attribute_count = 6;
       genetic::attribute::seed_method([] () {
          return 10; // higher than attribute count
@@ -76,8 +76,8 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE_THROWS(genetic::individual::mate(&a, &b));
    }
 
-   SECTION ( "custom mating function ordered works" ) {
-      genetic::individual::mating_method(&genetic::individual::ordered_crossover);
+   SECTION ( "custom crossover function ordered works" ) {
+      genetic::individual::crossover_method(&genetic::individual::ordered_crossover);
       genetic::individual::attribute_count = 10;
       genetic::attribute::seed_method([] () {
          return random::randint(0, 9);
@@ -92,8 +92,8 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE_FALSE(b == b_old);
    }
 
-   SECTION ( "custom mating function ordered can be set" ) {
-      genetic::individual::mating_method(&genetic::individual::ordered_crossover);
+   SECTION ( "custom crossover function ordered can be set" ) {
+      genetic::individual::crossover_method(&genetic::individual::ordered_crossover);
       genetic::individual a, b;
       a.seed(); b.seed();
       a.evaluate(); b.evaluate();
@@ -104,8 +104,8 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE_FALSE(b == b_old);
    }
 
-   SECTION ( "custom mating function blend can be set" ) {
-      genetic::individual::mating_method(&genetic::individual::blend_crossover, 0.4f);
+   SECTION ( "custom crossover function blend can be set" ) {
+      genetic::individual::crossover_method(&genetic::individual::blend_crossover, 0.4f);
       genetic::individual a, b;
       a.seed(); b.seed();
       a.evaluate(); b.evaluate();
