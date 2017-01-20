@@ -52,7 +52,7 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
    }
 
    SECTION ( "20 evolution cycles" ) {
-      genetic::individual::mutation_method(&genetic::individual::uniform_int, 0.1f, 0.0, 100.0);
+      genetic::individual::mutation_method(&genetic::individual::uniform_int, 0.1f, 0, 100);
       genetic::population pop(99);
       pop.evaluate();
       auto pop_old = pop;

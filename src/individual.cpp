@@ -67,10 +67,10 @@ void individual::mutate() {
    fit.dirty();
 }
 
-void individual::uniform_int(float mutation_rate, double min, double max) {
+void individual::uniform_int(float mutation_rate, int min, int max) {
    for (auto & attr : attributes) {
       if (random::probability(mutation_rate)) {
-         attr.randomize(min, max);
+         attr.randomize_int(min, max);
       }
    }
 }

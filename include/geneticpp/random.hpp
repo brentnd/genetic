@@ -19,7 +19,7 @@ public:
    /*
     * Return value has a <probability_> chance of being true
     */
-   static bool probability(double probability_);
+   static bool probability(float probability_);
 
    /*
     * Return a random integer N such that a <= N <= b.
@@ -37,13 +37,6 @@ public:
     * TODO: support (b <= N <= a for b < a).
     */
    static float uniform(float a, float b);
-
-   /*
-    * Return a random floating point number N such that a <= N <= b.
-    * Assumes: a <= b
-    * TODO: support (b <= N <= a for b < a).
-    */
-   static double uniform(double a, double b);
 private:
    static void initialize();
    static unsigned seed_value;

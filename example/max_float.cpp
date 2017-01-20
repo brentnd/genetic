@@ -15,13 +15,13 @@ int main( int argc, char * const * argv ) {
    genetic::population::evolution_method(&genetic::population::crossover_and_mutate, crossover_rate, ind_mutation_rate);
 
    // Individual configuration
-   double min_attr = 0.0;
-   double max_attr = 10.0;
+   float min_attr = 0.0;
+   float max_attr = 10.0;
    float attr_mutation_rate = 0.1;
    genetic::individual::mating_method(&genetic::individual::one_point_crossover);
-   genetic::individual::mutation_method(&genetic::individual::uniform_int, attr_mutation_rate, min_attr, max_attr);
+   genetic::individual::mutation_method(&genetic::individual::uniform_int, attr_mutation_rate, static_cast<int>(min_attr), static_cast<int>(max_attr));
    genetic::individual::attribute_count = 10;
-   genetic::attribute::seed_method([min_attr, max_attr] () -> double {
+   genetic::attribute::seed_method([min_attr, max_attr] () {
       return random::uniform(min_attr, max_attr);
    });
 

@@ -45,7 +45,7 @@ public:
    // Mutate this individual using mutation method
    void mutate();
    // Mutation variants for mutation_method
-   void uniform_int(float mutation_rate, double min, double max);
+   void uniform_int(float mutation_rate, int min, int max);
    void flip_bit(float mutation_rate);
    void shuffle_indexes(float mutation_rate);
 

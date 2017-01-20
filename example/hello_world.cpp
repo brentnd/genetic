@@ -20,8 +20,7 @@ int main( int argc, char * const * argv ) {
    float attr_mutation_rate = 0.1;
    char solution[] = "hello world!";
    genetic::individual::mating_method(&genetic::individual::two_point_crossover);
-   genetic::individual::mutation_method(&genetic::individual::uniform_int, attr_mutation_rate,
-                                        static_cast<double>(min_attr), static_cast<double>(max_attr));
+   genetic::individual::mutation_method(&genetic::individual::uniform_int, attr_mutation_rate, static_cast<int>(min_attr), static_cast<int>(max_attr));
    genetic::individual::attribute_count = sizeof solution - 1;
    genetic::individual::evaluation_method([solution] (genetic::individual const & ind) -> std::vector<float> {
       float fitness = 0.0;
@@ -36,7 +35,7 @@ int main( int argc, char * const * argv ) {
       }
       return {fitness};
    });
-   genetic::attribute::seed_method([min_attr, max_attr] () -> double {
+   genetic::attribute::seed_method([min_attr, max_attr] () {
       return random::randint(min_attr, max_attr);
    });
    genetic::attribute::display_method([] (std::ostream & stream, genetic::attribute const & attr) -> std::ostream & {
