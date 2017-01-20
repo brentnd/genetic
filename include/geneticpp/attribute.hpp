@@ -19,6 +19,7 @@ public:
    void randomize(float min, float max);
    void randomize_int(int min, int max);
    void flip();
+   void operator=(float val);
    bool operator==(attribute const & other) const;
    float operator+(attribute const & other) const;
 

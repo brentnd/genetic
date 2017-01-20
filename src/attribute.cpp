@@ -42,6 +42,10 @@ void attribute::flip() {
    value = !value;
 }
 
+void attribute::operator=(float val) {
+   value = val;
+}
+
 bool attribute::operator==(attribute const & other) const {
    return value == other.value;
 }

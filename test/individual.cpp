@@ -104,6 +104,18 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE_FALSE(b == b_old);
    }
 
+   SECTION ( "custom mating function blend can be set" ) {
+      genetic::individual::mating_method(&genetic::individual::blend_crossover, 0.4f);
+      genetic::individual a, b;
+      a.seed(); b.seed();
+      a.evaluate(); b.evaluate();
+      genetic::individual a_old = a, b_old = b;
+      genetic::individual::mate(&a, &b);
+      a.evaluate(); b.evaluate();
+      REQUIRE_FALSE(a == a_old);
+      REQUIRE_FALSE(b == b_old);
+   }
+
    SECTION ( "custom mutation function can be set" ) {
       genetic::individual::mutation_method(&genetic::individual::flip_bit, 0.5f);
       genetic::individual a;

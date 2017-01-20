@@ -92,6 +92,18 @@ individual::individual() :
    }
 }
 
+/*static*/ void individual::blend_crossover(individual * ind1, individual * ind2, float alpha) {
+   std::size_t size = std::min(ind1->size(), ind2->size());
+   float gamma, x1, x2;
+   for (unsigned i=0; i < size; i++) {
+      x1 = ind1->attributes[i];
+      x2 = ind2->attributes[i];
+      gamma = (1.0f + 2.0f * alpha) * random::uniform(0.0, 1.0) - alpha;
+      ind1->attributes[i] = (1.0f * gamma) * x1 + gamma * x2;
+      ind2->attributes[i] = gamma * x1 + (1.0f - gamma) * x2;
+   }
+}
+
 /*static*/ void individual::evaluation_method(std::function<std::vector<float>(individual const &)> && fcn) {
    evaluation_function = std::move(fcn);
 }
