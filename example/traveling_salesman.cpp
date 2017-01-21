@@ -10,8 +10,8 @@
 class city {
 public:
    city() :
-         x(random::randint(0, 200)),
-         y(random::randint(0, 200)) {
+         x(random::randint(0, 400)),
+         y(random::randint(0, 400)) {
    }
 
    city(unsigned x, unsigned y) :
@@ -32,28 +32,7 @@ private:
 int main( int argc, char * const * argv ) {
    random::seed();
 
-   std::array<city, 20> cities;
-   // Create and add our cities
-   cities[0] = city(60, 200);
-   cities[1] = city(180, 200);
-   cities[2] = city(80, 180);
-   cities[3] = city(140, 180);
-   cities[4] = city(20, 160);
-   cities[5] = city(100, 160);
-   cities[6] = city(200, 160);
-   cities[7] = city(140, 140);
-   cities[8] = city(40, 120);
-   cities[9] = city(100, 120);
-   cities[10] = city(180, 100);
-   cities[11] = city(60, 80);
-   cities[12] = city(120, 80);
-   cities[13] = city(180, 60);
-   cities[14] = city(20, 40);
-   cities[15] = city(100, 40);
-   cities[16] = city(200, 40);
-   cities[17] = city(20, 20);
-   cities[18] = city(60, 20);
-   cities[19] = city(160, 20);
+   std::array<city, 30> cities;
 
    // Population configuration
    std::size_t tournament_size = 3;
