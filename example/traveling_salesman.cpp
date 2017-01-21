@@ -63,7 +63,7 @@ int main( int argc, char * const * argv ) {
    genetic::fitness::objective_weights({-1.0f});
 
    // Individual configuration
-   float attr_mutation_rate = 0.1;
+   float attr_mutation_rate = 0.2;
    genetic::individual::crossover_method(&genetic::individual::ordered_crossover);
    genetic::individual::mutation_method(&genetic::individual::shuffle_indexes, attr_mutation_rate);
    genetic::individual::attribute_count = cities.size();
@@ -77,6 +77,8 @@ int main( int argc, char * const * argv ) {
          distance += last_city->distance_to(*this_city);
          last_city = this_city;
       }
+      // Return home
+      distance += last_city->distance_to(cities.at(ind.at(0)));
       return {distance};
    });
 
