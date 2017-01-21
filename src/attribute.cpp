@@ -2,7 +2,7 @@
 
 namespace genetic {
 
-/*static*/ std::function<float()> attribute::seed_function = [] () {
+/*static*/ std::function<float(unsigned)> attribute::seed_function = [] (unsigned) {
    return random::uniform(0.0, 100.0);
 };
 
@@ -14,8 +14,15 @@ namespace genetic {
 
 /*static*/ std::string attribute::display_delimiter = ", ";
 
-/*static*/ void attribute::seed_method(std::function<float()> && fcn) {
+/*static*/ void attribute::seed_method(std::function<float(unsigned)> && fcn) {
    seed_function = std::move(fcn);
+}
+
+/*static*/ void attribute::seed_method(std::function<float()> && fcn) {
+   seed_function = [fcn] (unsigned index) {
+      static_cast<void>(index);
+      return fcn();
+   };
 }
 
 /*static*/ void attribute::display_method(std::function<std::ostream &(std::ostream &, attribute const &)> && fcn){
@@ -26,8 +33,8 @@ attribute::attribute() :
       value(0.0) {
 }
 
-void attribute::seed() {
-   value = seed_function();
+void attribute::seed(unsigned index) {
+   value = seed_function(index);
 }
 
 void attribute::randomize(float min, float max) {

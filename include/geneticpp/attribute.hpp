@@ -10,12 +10,14 @@ namespace genetic {
 class attribute {
 public:
    // Custom function for evaluation
+   // Based on current position, return the value
+   static void seed_method(std::function<float(unsigned)> && fcn);
    static void seed_method(std::function<float()> && fcn);
    // Custom attribute display
    static void display_method(std::function<std::ostream&(std::ostream &, attribute const &)> && fcn);
 
    attribute();
-   void seed();
+   void seed(unsigned index);
    void randomize(float min, float max);
    void randomize_int(int min, int max);
    void flip();
@@ -35,7 +37,7 @@ public:
 public:
    static std::string display_delimiter;
 private:
-   static std::function<float()> seed_function;
+   static std::function<float(unsigned)> seed_function;
    static std::function<std::ostream&(std::ostream &, attribute const &)> display_function;
    float value;
 };

@@ -109,8 +109,9 @@ individual::individual() :
 }
 
 void individual::seed() {
+   unsigned i=0;
    for (auto & attr : attributes) {
-      attr.seed();
+      attr.seed(i++);
    }
    fit.dirty();
 }

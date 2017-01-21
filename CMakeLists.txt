@@ -30,6 +30,10 @@ add_executable(geneticpp-multiple-objectives
         example/multiple_objectives.cpp
         )
 target_link_libraries(geneticpp-multiple-objectives geneticpp)
+add_executable(geneticpp-traveling-salesman
+        example/traveling_salesman.cpp
+        )
+target_link_libraries(geneticpp-traveling-salesman geneticpp)
 
 add_executable(geneticpp-test
     test/main.cpp
