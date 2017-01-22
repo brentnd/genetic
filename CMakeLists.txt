@@ -30,10 +30,19 @@ add_executable(geneticpp-multiple-objectives
         example/multiple_objectives.cpp
         )
 target_link_libraries(geneticpp-multiple-objectives geneticpp)
+
+find_package( OpenCV QUIET )
+if (OpenCV_FOUND)
+    set(SALESMAN_LIBS ${OpenCV_LIBS})
+    add_definitions(-DWITH_OPENCV2)
+else()
+    # None
+    set(SALESMAN_LIBS "")
+endif()
 add_executable(geneticpp-traveling-salesman
         example/traveling_salesman.cpp
         )
-target_link_libraries(geneticpp-traveling-salesman geneticpp)
+target_link_libraries(geneticpp-traveling-salesman geneticpp ${SALESMAN_LIBS})
 
 add_executable(geneticpp-test
     test/main.cpp

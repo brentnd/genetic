@@ -4,14 +4,20 @@
 
 #include <cmath>
 
-#include <geneticpp.hpp>
-#include <map>
+#ifdef WITH_OPENCV2
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#endif
 
-class city {
-public:
+#include <geneticpp.hpp>
+
+static int x_size = 400;
+static int y_size = 400;
+
+struct city {
    city() :
-         x(random::randint(0, 400)),
-         y(random::randint(0, 400)) {
+         x(random::randint(0, x_size)),
+         y(random::randint(0, y_size)) {
    }
 
    city(unsigned x, unsigned y) :
@@ -25,14 +31,39 @@ public:
       return std::sqrt( x_dist*x_dist + y_dist*y_dist );
    }
 
-private:
    unsigned x, y;
 };
 
+static std::array<city, 20> cities;
+
+#ifdef WITH_OPENCV2
+static void display(genetic::individual const & ind) {
+   // Create black empty images
+   cv::Mat image = cv::Mat::zeros(x_size, y_size, CV_8UC3);
+   // White background
+   image.setTo(cv::Scalar(255, 255, 255));
+
+   city * last = &cities[ind.at(0)];
+   city * first = last;
+   for (auto const & attr : ind) {
+      city *now = &cities[attr];
+      // Draw a line
+      cv::line(image, cv::Point(last->x, y_size - last->y) /*start*/, cv::Point(now->x, y_size - now->y) /*end*/, cv::Scalar(50, 50, 50) /*gray*/);
+      last = now;
+   }
+   cv::line(image, cv::Point(last->x, y_size - last->y) /*start*/, cv::Point(first->x, y_size - first->y) /*end*/, cv::Scalar(50, 50, 50) /*gray*/);
+
+   for (auto const & city : cities) {
+      cv::circle(image, cv::Point(city.x, y_size - city.y), 4 /*radius*/, cv::Scalar(0, 0, 255) /*red*/, -1 /*filled*/);
+   }
+
+   imshow("Traveling Salesman Route", image);
+   cv::waitKey(0);
+}
+#endif
+
 int main( int argc, char * const * argv ) {
    random::seed();
-
-   std::array<city, 30> cities;
 
    // Population configuration
    std::size_t tournament_size = 3;
@@ -46,7 +77,7 @@ int main( int argc, char * const * argv ) {
    genetic::individual::crossover_method(&genetic::individual::ordered_crossover);
    genetic::individual::mutation_method(&genetic::individual::shuffle_indexes, attr_mutation_rate);
    genetic::individual::attribute_count = cities.size();
-   genetic::individual::evaluation_method([&cities] (genetic::individual const & ind) -> std::vector<float> {
+   genetic::individual::evaluation_method([] (genetic::individual const & ind) -> std::vector<float> {
       float distance = 0.0;
       unsigned i = ind.at(0);
       city * last_city = &cities.at(i);
@@ -75,5 +106,9 @@ int main( int argc, char * const * argv ) {
    genetic::population pop(population_size);
    pop.evolve(generations);
    std::printf("population evolved for %d generations\n", generations);
+
+#ifdef WITH_OPENCV2
+   display(pop.select_best(1)[0]);
+#endif
    return 0;
 }
