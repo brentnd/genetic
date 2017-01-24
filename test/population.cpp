@@ -69,4 +69,17 @@ TEST_CASE( "Test for genetic::population", "[population]" ) {
       REQUIRE(pop.select_best(1)[0].weighted_fitness() >= pop_old.select_best(1)[0].weighted_fitness());
       REQUIRE(pop.size() == pop_old.size());
    }
+
+   SECTION ( "hall of fame" ) {
+      random::seed(5);
+      genetic::population pop(10);
+      pop.evaluate();
+      auto pop_old = pop;
+      pop.evolve(20);
+      float last_weighted_fitness = 0.0;
+      for (unsigned i=0; i < 10; i++) {
+         REQUIRE(pop.hall_of_fame(i).weighted_fitness() >= last_weighted_fitness);
+         last_weighted_fitness = pop.hall_of_fame(i).weighted_fitness();
+      }
+   }
 }

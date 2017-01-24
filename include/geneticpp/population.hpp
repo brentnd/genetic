@@ -56,14 +56,18 @@ public:
    std::size_t size() const;
 
    individual & operator[] (int i);
+
+   // Get the best individual at a specific generation
+   individual const & hall_of_fame(unsigned generation);
 private:
-   void print_stats(unsigned generation=0) const;
+   void print_stats() const;
 
 private:
    static std::function<population(population const &, std::size_t k)> selection_function;
    static std::function<void(population &)> evolution_function;
    // Storage for all individuals in this population
    std::vector<individual> individuals;
+   std::vector<individual> hall_of_fame_individuals;
 };
 
 } // namespace genetic

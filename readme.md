@@ -15,7 +15,6 @@ CMake is used for all builds. `build.sh` bash script is used to run all CMake ta
  Current tests for `random`, `sequence`, and `population`.
  
 ### TODO
-* Hall of fame
 * Dynamic individual attribute count
 * Logging
 * Switch to GTest and re-write tests to improve coverage

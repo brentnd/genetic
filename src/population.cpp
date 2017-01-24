@@ -124,7 +124,9 @@ void population::mutate(float mutation_rate) {
 void population::evolve(unsigned generations) {
    evaluate();
    for (unsigned gen=0; gen < generations; gen++) {
-      print_stats(gen);
+      auto best(select_best(1)[0]);
+      hall_of_fame_individuals.push_back(std::move(best));
+      print_stats();
       auto offspring(selection_function(*this, size()));
       evolution_function(offspring);
       individuals = std::move(offspring.individuals);
@@ -142,14 +144,17 @@ std::size_t population::size() const {
    return individuals.size();
 }
 
-void population::print_stats(unsigned generation /*=0*/) const {
-   auto best1(select_best(1)[0]);
-   std::printf("Population generation=%d size=%lu, best=%f\n", generation, size(), best1.weighted_fitness());
-   std::cout << "Best:" << best1 << std::endl;
+void population::print_stats() const {
+   std::printf("Population generation=%lu size=%lu, best=%f\n", hall_of_fame_individuals.size(), size(), hall_of_fame_individuals.back().weighted_fitness());
+   std::cout << "Best:" << hall_of_fame_individuals.back() << std::endl;
 }
 
 individual & population::operator[] (int i) {
    return individuals.at(i);
+}
+
+individual const & population::hall_of_fame(unsigned generation) {
+   return hall_of_fame_individuals.at(generation);
 }
 
 } // namespace genetic
