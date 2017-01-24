@@ -1,6 +1,7 @@
 #pragma once
 
 #include <vector>
+#include <random>
 
 class random {
 public:
@@ -37,7 +38,13 @@ public:
     * TODO: support (b <= N <= a for b < a).
     */
    static float uniform(float a, float b);
+
+   /*
+    * Gaussian distribution. mu is the mean, and sigma is the standard deviation.
+    */
+   static float gauss(float mu, float sigma);
 private:
    static void initialize();
    static unsigned seed_value;
+   static std::random_device rd;
 };

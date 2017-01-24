@@ -3,6 +3,7 @@
 #include <algorithm>
 
 #include <geneticpp/random.hpp>
+#include <map>
 
 TEST_CASE( "Test for random", "[random]" ) {
    random::seed(1);
@@ -83,5 +84,14 @@ TEST_CASE( "Test for random", "[random]" ) {
    SECTION ( "random vector invalid range" ) {
       random::reset();
       REQUIRE_THROWS(random::sample(0, 5, 20, true));
+   }
+
+   SECTION ( "guassian random" ) {
+      random::reset();
+      std::map<int, int> hist;
+      for (int n=0; n<10000; ++n) {
+         ++hist[std::round(random::gauss(5.0, 2.0))];
+      }
+      // Validate histogram
    }
 }

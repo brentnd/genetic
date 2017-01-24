@@ -6,6 +6,7 @@
 #include <stdexcept>
 
 /*static*/ unsigned random::seed_value = 0;
+/*static*/ std::random_device random::rd;
 
 void random::seed() {
    seed(static_cast<unsigned>(std::time(0)));
@@ -40,6 +41,13 @@ float random::uniform(float a, float b) {
    float range = b - a;
    float r = static_cast<float>(std::rand()) / static_cast<float>(RAND_MAX);
    return r * range - a;
+}
+
+float random::gauss(float mu, float sigma) {
+   std::normal_distribution<float> dist(mu, sigma);
+   // Should gen be here?
+   std::mt19937 gen(rd());
+   return dist(gen);
 }
 
 std::vector<int> random::sample(int a, int b, unsigned k, bool unique) {
