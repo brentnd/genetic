@@ -1,7 +1,6 @@
 # geneticpp
 
-geneticpp is a non-production ready attempt at implementing evolutionary algorithms to leverage use
- of C++11 features and the Standard Template Library.
+geneticpp is an experimental attempt at implementing evolutionary algorithms leveraging C++11 features and the Standard Template Library.
 
 Inspired by the ease-of-use and flexibility of https://github.com/DEAP/deap (a Python project).
 
