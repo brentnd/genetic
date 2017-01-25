@@ -150,6 +150,14 @@ void individual::shuffle_indexes(float mutation_rate) {
    }
 }
 
+void individual::gaussian(float mutation_rate, float mu, float sigma) {
+   for (auto & attr : attributes) {
+      if (random::probability(mutation_rate)) {
+         attr = static_cast<float>(attr) + random::gauss(mu, sigma);
+      }
+   }
+}
+
 void individual::evaluate() {
    if (!fit.valid()) {
       fit.update(evaluation_function(*this));

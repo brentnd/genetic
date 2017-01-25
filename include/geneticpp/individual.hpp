@@ -50,6 +50,7 @@ public:
    void uniform_int(float mutation_rate, int min, int max);
    void flip_bit(float mutation_rate);
    void shuffle_indexes(float mutation_rate);
+   void gaussian(float mutation_rate, float mu, float sigma);
 
    // Initialize the attributes by seeding them
    void seed();

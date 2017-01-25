@@ -126,6 +126,26 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       REQUIRE(a.weighted_fitness() != 0);
    }
 
+   SECTION ( "custom mutation gaussian no change" ) {
+      genetic::individual::mutation_method(&genetic::individual::gaussian, 1.0f, 0.0f, 0.0f);
+      genetic::individual a;
+      a.evaluate();
+      REQUIRE(a.weighted_fitness() == 0);
+      a.mutate();
+      a.evaluate();
+      REQUIRE(a.weighted_fitness() == 0);
+   }
+
+   SECTION ( "custom mutation gaussian with change" ) {
+      genetic::individual::mutation_method(&genetic::individual::gaussian, 1.0f, 0.0f, 1.0f);
+      genetic::individual a;
+      a.evaluate();
+      REQUIRE(a.weighted_fitness() == 0);
+      a.mutate();
+      a.evaluate();
+      REQUIRE(a.weighted_fitness() != 0);
+   }
+
    SECTION ( "custom evaluation function can be set" ) {
       genetic::individual::evaluation_method([] (genetic::individual const & ind) -> std::vector<float> {
          return {42};
