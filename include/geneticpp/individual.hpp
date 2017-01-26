@@ -51,6 +51,7 @@ public:
    void flip_bit(float mutation_rate);
    void shuffle_indexes(float mutation_rate);
    void gaussian(float mutation_rate, float mu, float sigma);
+   void polynomial_bounded(float mutation_rate, float eta, float min, float max);
 
    // Initialize the attributes by seeding them
    void seed();

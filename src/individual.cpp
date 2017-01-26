@@ -158,6 +158,28 @@ void individual::gaussian(float mutation_rate, float mu, float sigma) {
    }
 }
 
+void individual::polynomial_bounded(float mutation_rate, float eta, float xl, float xu) {
+   for (auto & attr : attributes) {
+      if (random::probability(mutation_rate)) {
+         float x = attr;
+         float delta_1 = (x - xl) / (xu - xl);
+         float delta_2 = (xu - x) / (xu - xl);
+         float mut_pow = 1.0f / (eta - 1.0f);
+
+         float rand = random::uniform(0.0, 1.0);
+         float delta_q;
+         if (rand < 0.5f) {
+            delta_q = std::pow(2.0f * rand + (1.0f - 2.0f * rand) * std::pow(1.0f - delta_1, eta + 1.0f), mut_pow - 1.0f);
+         } else {
+            delta_q = 1.0f - std::pow(2.0f * (1.0 - rand) + 2.0f * (rand - 0.5f) * std::pow(1.0 - delta_2, eta + 1.0f), mut_pow);
+         }
+         x += delta_q * (xu - xl);
+         x = std::min(std::max(x, xl), xu);
+         attr = x;
+      }
+   }
+}
+
 void individual::evaluate() {
    if (!fit.valid()) {
       fit.update(evaluation_function(*this));
