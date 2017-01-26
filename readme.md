@@ -17,5 +17,4 @@ CMake is used for all builds. `build.sh` bash script is used to run all CMake ta
 * Dynamic individual attribute count
 * Logging
 * Switch to GTest and re-write tests to improve coverage
-* Mutation functions (ES log normal)
 * Crossover functions (partially matched, simulated binary)
