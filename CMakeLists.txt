@@ -7,15 +7,18 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 include_directories(include)
 include_directories(opt/Catch/include)
+include_directories(opt/randomcpp/include)
+
+add_subdirectory(opt/randomcpp)
 
 set(SOURCE_FILES
    src/fitness.cpp
    src/attribute.cpp
    src/individual.cpp
-   src/population.cpp
-   src/random.cpp)
+   src/population.cpp)
 
 add_library(geneticpp SHARED ${SOURCE_FILES})
+target_link_libraries(geneticpp randomcpp)
 
 add_executable(geneticpp-hello-world
         example/hello_world.cpp
@@ -45,8 +48,7 @@ target_link_libraries(geneticpp-traveling-salesman geneticpp ${SALESMAN_LIBS})
 
 add_executable(geneticpp-test
     test/main.cpp
-        test/population.cpp
-    test/random.cpp
+    test/population.cpp
     test/individual.cpp
 )
 target_link_libraries(geneticpp-test geneticpp)

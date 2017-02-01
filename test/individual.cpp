@@ -1,5 +1,5 @@
 #include <catch.hpp>
-
+#include <randomcpp/random.hpp>
 #include <geneticpp/individual.hpp>
 
 TEST_CASE( "Test for genetic::individual", "[individual]" ) {
@@ -147,7 +147,7 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
    }
 
    SECTION ( "custom mutation polynomial bound with change" ) {
-      genetic::individual::mutation_method(&genetic::individual::polynomial_bounded, 1.0f, 0.5f, 0.0f, 1.0f);
+      genetic::individual::mutation_method(&genetic::individual::polynomial_bounded, 1.0f, 0.2f, 0.1f, 0.9f);
       genetic::individual a;
       a.evaluate();
       REQUIRE(a.weighted_fitness() == 0);

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "random.hpp"
+#include <randomcpp/random.hpp>
 
 #include <iostream>
 #include <functional>

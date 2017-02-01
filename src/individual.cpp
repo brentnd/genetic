@@ -1,4 +1,5 @@
 #include <geneticpp/individual.hpp>
+#include <randomcpp/random.hpp>
 #include <numeric>
 
 namespace genetic {

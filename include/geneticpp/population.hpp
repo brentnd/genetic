@@ -5,9 +5,9 @@
 #include <cstdlib>
 #include <functional>
 #include <vector>
+#include <randomcpp/random.hpp>
 
 #include "individual.hpp"
-#include "random.hpp"
 
 namespace genetic {
 
