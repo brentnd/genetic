@@ -3,9 +3,10 @@
 #include <iostream>
 
 #include <geneticpp.hpp>
+#include <randomcpp.hpp>
 
 int main( int argc, char * const * argv ) {
-   random::seed();
+   randomcpp::seed();
 
    // Population configuration
    std::size_t tournament_size = 3;

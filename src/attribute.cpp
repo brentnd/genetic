@@ -1,9 +1,10 @@
 #include <geneticpp/attribute.hpp>
+#include <randomcpp.hpp>
 
 namespace genetic {
 
 /*static*/ std::function<float(unsigned)> attribute::seed_function = [] (unsigned) {
-   return random::uniform(0.0, 100.0);
+   return randomcpp::uniform(0.0, 100.0);
 };
 
 /*static*/ std::function<std::ostream &(std::ostream & stream, attribute const & attr)> attribute::display_function =
@@ -38,11 +39,11 @@ void attribute::seed(unsigned index) {
 }
 
 void attribute::randomize(float min, float max) {
-   value = random::uniform(min, max);
+   value = randomcpp::uniform(min, max);
 }
 
 void attribute::randomize_int(int min, int max) {
-   value = random::randint(min, max);
+   value = randomcpp::randint(min, max);
 }
 
 void attribute::flip() {

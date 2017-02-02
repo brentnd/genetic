@@ -10,14 +10,15 @@
 #endif
 
 #include <geneticpp.hpp>
+#include <randomcpp.hpp>
 
 static int x_size = 400;
 static int y_size = 400;
 
 struct city {
    city() :
-         x(random::randint(0, x_size)),
-         y(random::randint(0, y_size)) {
+         x(randomcpp::randint(0, x_size)),
+         y(randomcpp::randint(0, y_size)) {
    }
 
    city(unsigned x, unsigned y) :
@@ -63,7 +64,7 @@ static void display(genetic::individual const & ind) {
 #endif
 
 int main( int argc, char * const * argv ) {
-   random::seed();
+   randomcpp::seed();
 
    // Population configuration
    std::size_t tournament_size = 3;

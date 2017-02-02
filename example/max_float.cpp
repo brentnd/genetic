@@ -3,9 +3,10 @@
 #include <iostream>
 
 #include <geneticpp.hpp>
+#include <randomcpp.hpp>
 
 int main( int argc, char * const * argv ) {
-   random::seed();
+   randomcpp::seed();
 
    // Population configuration
    std::size_t tournament_size = 3;
@@ -22,7 +23,7 @@ int main( int argc, char * const * argv ) {
    genetic::individual::mutation_method(&genetic::individual::uniform_int, attr_mutation_rate, static_cast<int>(min_attr), static_cast<int>(max_attr));
    genetic::individual::attribute_count = 10;
    genetic::attribute::seed_method([min_attr, max_attr] () {
-      return random::uniform(min_attr, max_attr);
+      return randomcpp::uniform(min_attr, max_attr);
    });
 
    unsigned generations = 40;

@@ -3,9 +3,10 @@
 #include <iostream>
 
 #include <geneticpp.hpp>
+#include <randomcpp.hpp>
 
 int main( int argc, char * const * argv ) {
-   random::seed();
+   randomcpp::seed();
 
    // Population configuration
    std::size_t tournament_size = 3;
@@ -36,7 +37,7 @@ int main( int argc, char * const * argv ) {
       return {fitness};
    });
    genetic::attribute::seed_method([min_attr, max_attr] () {
-      return random::randint(min_attr, max_attr);
+      return randomcpp::randint(min_attr, max_attr);
    });
    genetic::attribute::display_method([] (std::ostream & stream, genetic::attribute const & attr) -> std::ostream & {
       stream << static_cast<char>(attr);

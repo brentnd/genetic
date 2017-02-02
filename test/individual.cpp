@@ -1,10 +1,10 @@
 #include <catch.hpp>
-#include <randomcpp/random.hpp>
 #include <geneticpp/individual.hpp>
+#include <randomcpp.hpp>
 
 TEST_CASE( "Test for genetic::individual", "[individual]" ) {
    // Predictable random tests (that passed before)
-   random::seed(1);
+   randomcpp::seed(1);
    SECTION ( "genes of two rand inits are different" ) {
       genetic::individual a, b;
       a.seed(); b.seed();
@@ -80,7 +80,8 @@ TEST_CASE( "Test for genetic::individual", "[individual]" ) {
       genetic::individual::crossover_method(&genetic::individual::ordered_crossover);
       genetic::individual::attribute_count = 10;
       genetic::attribute::seed_method([] () {
-         return random::randint(0, 9);
+         auto i(randomcpp::randint(0, 9));
+         return i;
       });
       genetic::individual a, b;
       a.seed(); b.seed();

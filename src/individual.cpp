@@ -1,5 +1,5 @@
 #include <geneticpp/individual.hpp>
-#include <randomcpp/random.hpp>
+#include <randomcpp.hpp>
 #include <numeric>
 
 namespace genetic {
@@ -24,7 +24,7 @@ individual::individual() :
 /*static*/ void individual::one_point_crossover(individual * ind1, individual * ind2) {
    std::size_t size, point;
    size = std::min(ind1->size(), ind2->size());
-   point = random::randint(1, size - 1);
+   point = randomcpp::randrange(1, size);
    // Swap point1: between individual 1 and 2
    std::swap_ranges(ind1->attributes.begin() + point, ind1->attributes.end(), ind2->attributes.begin() + point);
 }
@@ -32,8 +32,8 @@ individual::individual() :
 /*static*/ void individual::two_point_crossover(individual * ind1, individual * ind2) {
    std::size_t size, point1, point2;
    size = std::min(ind1->size(), ind2->size());
-   point1 = random::randint(1, size);
-   point2 = random::randint(1, size - 1);
+   point1 = randomcpp::randrange(1, size);
+   point2 = randomcpp::randrange(1, size - 1);
    if (point2 >= point1) {
       ++point2;
    } else {
@@ -46,7 +46,7 @@ individual::individual() :
 /*static*/ void individual::uniform_crossover(individual *ind1, individual *ind2, float indpb) {
    std::size_t size = std::min(ind1->size(), ind2->size());
    for (unsigned i=0; i < size; i++) {
-      if (random::probability(indpb)) {
+      if (randomcpp::probability(indpb)) {
          std::swap(ind1->attributes[i], ind2->attributes[i]);
       }
    }
@@ -55,8 +55,8 @@ individual::individual() :
 /*static*/ void individual::ordered_crossover(individual * ind1, individual * ind2) {
    std::size_t size, a, b;
    size = std::min(ind1->size(), ind2->size());
-   a = random::randint(0, size);
-   b = random::randint(0, size);
+   a = randomcpp::randrange(size);
+   b = randomcpp::randrange(size);
 
    if (a > b) {
       std::swap(a,b);
@@ -99,7 +99,7 @@ individual::individual() :
    for (unsigned i=0; i < size; i++) {
       x1 = ind1->attributes[i];
       x2 = ind2->attributes[i];
-      gamma = (1.0f + 2.0f * alpha) * random::uniform(0.0, 1.0) - alpha;
+      gamma = (1.0f + 2.0f * alpha) * randomcpp::uniform(0.0, 1.0) - alpha;
       ind1->attributes[i] = (1.0f * gamma) * x1 + gamma * x2;
       ind2->attributes[i] = gamma * x1 + (1.0f - gamma) * x2;
    }
@@ -124,7 +124,7 @@ void individual::mutate() {
 
 void individual::uniform_int(float mutation_rate, int min, int max) {
    for (auto & attr : attributes) {
-      if (random::probability(mutation_rate)) {
+      if (randomcpp::probability(mutation_rate)) {
          attr.randomize_int(min, max);
       }
    }
@@ -132,7 +132,7 @@ void individual::uniform_int(float mutation_rate, int min, int max) {
 
 void individual::flip_bit(float mutation_rate) {
    for (auto & attr : attributes) {
-      if (random::probability(mutation_rate)) {
+      if (randomcpp::probability(mutation_rate)) {
          attr.flip();
       }
    }
@@ -141,8 +141,8 @@ void individual::flip_bit(float mutation_rate) {
 void individual::shuffle_indexes(float mutation_rate) {
    unsigned swap_index;
    for (unsigned i=0; i < size(); ++i) {
-      if (random::probability(mutation_rate)) {
-         swap_index = static_cast<unsigned>(random::randint(0, size() - 2));
+      if (randomcpp::probability(mutation_rate)) {
+         swap_index = static_cast<unsigned>(randomcpp::randrange(size() - 1));
          if (swap_index >= i) {
             ++swap_index;
          }
@@ -153,8 +153,8 @@ void individual::shuffle_indexes(float mutation_rate) {
 
 void individual::gaussian(float mutation_rate, float mu, float sigma) {
    for (auto & attr : attributes) {
-      if (random::probability(mutation_rate)) {
-         attr = static_cast<float>(attr) + random::gauss(mu, sigma);
+      if (randomcpp::probability(mutation_rate)) {
+         attr = static_cast<float>(attr) + randomcpp::gauss(mu, sigma);
       }
    }
 }
@@ -163,13 +163,13 @@ void individual::polynomial_bounded(float mutation_rate, float eta, float xl, fl
    for (auto & attr : attributes) {
       // Adopted from real_mutate_ind in NSGA2 by Dr. Kalyanmoy Deb
       // https://github.com/amirmasoudabdol/nsga2/blob/master/mutation.c#L63
-      if (random::probability(mutation_rate)) {
+      if (randomcpp::probability(mutation_rate)) {
          float x = attr;
          float delta_1 = (x - xl) / (xu - xl);
          float delta_2 = (xu - x) / (xu - xl);
          float mut_pow = 1.0f / (eta - 1.0f);
 
-         float rand = random::uniform(0.0, 1.0);
+         float rand = randomcpp::uniform(0.0, 1.0);
          float delta_q, xy, val;
          if (rand < 0.5f) {
             xy = 1.0f - delta_1;

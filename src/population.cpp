@@ -1,4 +1,5 @@
 #include <geneticpp/population.hpp>
+#include <randomcpp.hpp>
 
 namespace genetic {
 
@@ -18,7 +19,7 @@ population::population(population const & pop) :
 }
 
 population population::select_random(std::size_t k) const {
-   auto selected(random::sample(0, size() - 1, k, false /* not unique */));
+   auto selected(randomcpp::sample(0, size() - 1, k, false /* not unique */));
    population random_individuals(0);
    for (auto const & index : selected) {
       // Copy from this population to the new one
@@ -63,7 +64,7 @@ population population::select_roulette(std::size_t k) const {
                                           });
    float target_sum, spin_sum;
    for (unsigned i=0; i < k; i++) {
-      target_sum = random::uniform(0.0, 1.0) * population_sum;
+      target_sum = randomcpp::uniform(0.0, 1.0) * population_sum;
       spin_sum = 0.0;
       for (auto const & ind : sorted_individuals) {
          spin_sum += ind.weighted_fitness();
@@ -89,7 +90,7 @@ void population::crossover_or_mutate(std::size_t lambda, float crossover_rate, f
    population offspring(0);
    offspring.individuals.reserve(lambda);
    for (unsigned i=0; i < lambda; i++) {
-      float op_choice = random::uniform(0.0f, 1.0f);
+      float op_choice = randomcpp::uniform(0.0f, 1.0f);
       if (op_choice < crossover_rate) {
          auto mate_pop(select_random(2));
          individual::mate(&mate_pop.individuals[0], &mate_pop.individuals[1]);
@@ -107,7 +108,7 @@ void population::crossover_or_mutate(std::size_t lambda, float crossover_rate, f
 
 void population::crossover(float crossover_rate) {
    for (unsigned i=1; i < size(); i += 2) {
-      if (random::probability(crossover_rate)) {
+      if (randomcpp::probability(crossover_rate)) {
          individual::mate(&individuals[i - 1], &individuals[i]);
       }
    }
@@ -115,7 +116,7 @@ void population::crossover(float crossover_rate) {
 
 void population::mutate(float mutation_rate) {
    for (auto & individual : individuals) {
-      if (random::probability(mutation_rate)) {
+      if (randomcpp::probability(mutation_rate)) {
          individual.mutate();
       }
    }
